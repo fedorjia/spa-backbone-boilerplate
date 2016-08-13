@@ -43,8 +43,8 @@ const router = {
         });
 
         this.appRouter = new AppRouter();
-        Backbone.history.start();
-        // Backbone.history.start({pushState:true, root: '/'});
+        // Backbone.history.start();
+        Backbone.history.start({pushState:true, root: '/'});
     },
 
     /**

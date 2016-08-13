@@ -747,8 +747,8 @@ var router = {
         });
 
         this.appRouter = new AppRouter();
-        Backbone.history.start();
-        // Backbone.history.start({pushState:true, root: '/'});
+        // Backbone.history.start();
+        Backbone.history.start({ pushState: true, root: '/' });
     },
 
     /**
@@ -900,8 +900,6 @@ var viewport = {
 			}
 		}
 
-		console.log(direction);
-
 		var trfactory = _transition2.default.get(currentView, targetView, args.__animation__);
 		trfactory[direction](function () {
 			if (direction === 'push') {
@@ -923,7 +921,6 @@ var viewport = {
 					}
 				}
 			});
-			console.log(cache);
 		});
 	},
 

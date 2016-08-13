@@ -42,8 +42,6 @@ const viewport = {
 			}
 		}
 
-		console.log(direction);
-
 		const trfactory = transition.get(currentView, targetView, args.__animation__);
 		trfactory[direction](() => {
 			if(direction === 'push') { // push
@@ -64,7 +62,6 @@ const viewport = {
 					}
 				}
 			});
-			console.log(cache);
 		});
 	},
 
