@@ -1,0 +1,85 @@
+@import "../utils/variables";
+@import "../utils/mixins";
+
+.home-view {
+    background: url("/images/bg0.jpg");
+    cover();
+
+    .home-box {
+      position :relative;
+      text-align : center;
+      height : 100%;
+      .label {
+        width: 35%;
+        position : absolute;
+        top: 20%;
+        left: 50%;
+        margin-left: -17.5%;
+      }
+      .btn-wrap {
+          position: absolute;
+          display: block;
+          bottom: 10%;
+          width 100%;
+          text-align : center;
+      }
+      .btn {
+          vertical-align : middle;
+       }
+    }
+
+    .listen-box{
+      display: none;
+      opacity : 0;
+      height : 100%;
+      width : 100%;
+      position : absolute;
+      .label1 {
+        position : absolute;
+        left: 40%;
+        top: 7%;
+        width: 52%;
+        display: block;
+      }
+      .label2 {
+        position : absolute;
+        width: 52%;
+        left: 31%;
+        top: 76%;
+        display: block;
+      }
+    }
+
+  .snot,
+  .bubbles {
+      display: none;
+      position : absolute;
+  }
+
+  .bottle,
+  .watter {
+      bottom: 100%;
+      width: 84px;
+      left: 7%;
+      position : absolute;
+  }
+
+  .snot {
+      position : absolute;
+      width : 100px;
+      bottom: 29%;
+      left: 15%;
+  }
+
+  .bubbles {
+      width : 100%;
+      height : 100%;
+
+      .item {
+          position : absolute;
+          width 40px;
+          opacity : 0;
+          transform: scale(1);
+      }
+  }
+}

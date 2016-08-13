@@ -1,0 +1,65 @@
+m-320() {
+    @media (min-width: 320px) {
+        {block}
+    }
+}
+
+m-375() {
+    @media (min-width: 375px) {
+        {block}
+    }
+}
+
+m-414() {
+    @media (min-width: 414px) {
+        {block}
+    }
+}
+
+vendor(prop, args) {
+    -webkit-{prop} args;
+    -moz-{prop} args;
+    {prop} args;
+}
+
+border-radius() {
+    vendor('border-radius', arguments);
+}
+
+box-shadow() {
+    vendor('box-shadow', arguments);
+}
+
+transform() {
+    vendor('transform', arguments);
+}
+
+clearfix() {
+    &:before,
+    &:after {
+      content: " ";
+      display: table;
+    }
+    &:after { clear: both; }
+}
+
+ellipsis() {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+circle() {
+    border-radius: 50%;
+}
+
+cover() {
+    background-size: cover;
+    background-position: center;
+}
+
+contain() {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}

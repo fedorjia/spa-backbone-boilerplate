@@ -1,0 +1,94 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    -webkit-text-size-adjust: none;
+}
+
+body {
+    font-family: $font-family-normal;
+    line-height: 15px;
+    font-size: 15px;
+    background-color: rgba(0,0,0,0.8);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    color: $color-black-normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+    -webkit-touch-callout: none;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -ms-touch-action: none;
+    -moz-user-select: -moz-none;
+}
+
+*:focus {
+    outline: none;
+}
+
+::-webkit-input-placeholder {
+    color: #bfbfbf;
+}
+
+::-moz-placeholder {
+    color: #bfbfbf;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #bfbfbf;
+}
+
+ ::-webkit-scrollbar{
+    width:3px;
+    height:4px;
+ }
+ ::-webkit-scrollbar-track-piece{
+    width: 10px;
+ }
+ ::-webkit-scrollbar-thumb{
+    background-color:#c46262;
+    outline-offset:-2px;
+ }
+
+input, textarea {
+    -webkit-user-select: text;
+    -ms-user-select: auto;
+    -moz-user-select: text;
+}
+textarea, input,select {
+    background: none;
+}
+
+input {
+    -webkit-appearance: none;
+    border-radius: 0;
+}
+
+ul li {
+    list-style: none;
+}
