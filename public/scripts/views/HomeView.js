@@ -8,25 +8,14 @@ const HomeView = Component.extend({
 
     initialize() {
         this.constructor.__super__.initialize.apply(this);
+        this.name = 'backbone';
     },
 
     render() {
         this.constructor.__super__.render.apply(this);
         // append to html
-        this.$el.html(template({}));
-        // add events, 阻止300ms延时
-        this.addEvents();
+        this.$el.html(template({ name: this.name }));
         return this;
-    },
-
-    /********************** events ********************/
-    onListen(event) {
-        if(this.fetchFlag) {
-            return;
-        }
-        this.fetchFlag = true;
-        $(event.target).velocity('callout.pulse', 200);
-        this.animate();
     }
 });
 

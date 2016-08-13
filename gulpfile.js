@@ -39,8 +39,7 @@ const P = {
 
 P.coreScripts = [
     P.vendors + '/backscore.min.js',
-    P.vendors + '/velocity.all.min.js',
-    P.vendors + '/hammer.min.js'
+    P.vendors + '/velocity.all.min.js'
 ];
 
 

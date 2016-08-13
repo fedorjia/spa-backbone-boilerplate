@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/app.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/app.js":[function(require,module,exports){
 'use strict';
 
 var _viewport = require('./commons/viewport');
@@ -19,7 +19,7 @@ $(function () {
   _viewport2.default.push(_HomeView2.default);
 }());
 
-},{"./commons/viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/commons/viewport.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/commons/consts.js":[function(require,module,exports){
+},{"./commons/viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/viewport.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67,7 +67,7 @@ consts.PRIORITYS = {
 
 exports.default = consts;
 
-},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/commons/viewport.js":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/viewport.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -266,7 +266,7 @@ var viewport = {
 
 exports.default = viewport;
 
-},{"./consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/commons/consts.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/views/HomeView.js":[function(require,module,exports){
+},{"./consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -291,31 +291,19 @@ var HomeView = _Component2.default.extend({
 
     initialize: function initialize() {
         this.constructor.__super__.initialize.apply(this);
+        this.name = 'backbone';
     },
     render: function render() {
         this.constructor.__super__.render.apply(this);
         // append to html
-        this.$el.html((0, _home2.default)({}));
-        // add events, 阻止300ms延时
-        this.addEvents();
+        this.$el.html((0, _home2.default)({ name: this.name }));
         return this;
-    },
-
-
-    /********************** events ********************/
-    onListen: function onListen(event) {
-        if (this.fetchFlag) {
-            return;
-        }
-        this.fetchFlag = true;
-        $(event.target).velocity('callout.pulse', 200);
-        this.animate();
     }
 });
 
 exports.default = HomeView;
 
-},{"../../tpls/home.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/tpls/home.html","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/views/generic/Component.js":[function(require,module,exports){
+},{"../../tpls/home.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/home.html","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js":[function(require,module,exports){
 'use strict';
 
 /***
@@ -374,13 +362,15 @@ var Component = Backbone.View.extend({
 
 module.exports = Component;
 
-},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/tpls/home.html":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/home.html":[function(require,module,exports){
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<audio></audio>\n\n<div class="home-box">\n\t<img class="label" src="../images/label_start.png"/>\n\t<div class="btn-wrap">\n\t\t<img class="btn" src="../icons/btn_listen.png"/>\n\t</div>\n</div>\n\n<div class="listen-box">\n\t<img class="label1" src="../images/label_talking.png"/>\n\t<img class="label2" src="../images/label_story.png"/>\n</div>\n\n<img class="bottle" src="../images/bottle.png"/>\n<img class="watter" src="../images/watter.png"/>\n<img class="snot" src="../icons/snot.png"/>\n\n<div class="bubbles"></div>';
+__p+='<div class="">\n\thello world, build SPA with '+
+((__t=( name ))==null?'':__t)+
+'\n</div>\n\n<ul class="items">\n\n</ul>';
 }
 return __p;
 };
 
-},{}]},{},["/Users/fedor/works/private/github/single-page-application-boilerplate-mobile/public/scripts/app.js"]);
+},{}]},{},["/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/app.js"]);

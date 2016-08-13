@@ -1,7 +1,7 @@
 const settings = {
-    appname: 'single-page-application-boilerplate-mobile',
+    appname: 'single-page-application-boilerplate-backbone',
     debug: true,
-    port: 3016
+    port: 3000
 };
 
 module.exports = settings;

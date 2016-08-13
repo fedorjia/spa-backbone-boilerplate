@@ -1,7 +1,7 @@
 {
-  "name": "single-page-application-boilerplate-mobile",
+  "name": "single-page-application-boilerplate-backbone",
   "version": "1.0.0",
-  "description": "single page application boilerplate mobile",
+  "description": "single page application boilerplate backbone",
   "main": "index.js",
   "scripts": {},
   "repository": {
@@ -9,7 +9,7 @@
     "url": ""
   },
   "keywords": [
-    "single page application, spa"
+    "single page application, spa, backbone"
   ],
   "author": "Fedor",
   "license": "ISC",
