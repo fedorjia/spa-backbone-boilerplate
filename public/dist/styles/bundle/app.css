@@ -232,3 +232,38 @@ h6 {
   font-size: 15px;
   line-height: 168%;
 }
+.detail-view .btn-back,
+.detail-view .btn-next {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #292929;
+  padding: 8px 12px;
+  text-align: center;
+  width: 45%;
+  margin-left: 3%;
+  display: inline-block;
+}
+.end-view {
+  padding: 24px 12px;
+  overflow-y: auto;
+}
+.end-view h1 {
+  display: block;
+  text-align: center;
+  margin: 24px 8px;
+}
+.end-view .desc {
+  margin: 36px 12px;
+  text-align: center;
+}
+.end-view .btn-back {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #292929;
+  padding: 8px 12px;
+  text-align: center;
+  width: 45%;
+  margin: 1% auto;
+}

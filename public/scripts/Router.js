@@ -2,6 +2,7 @@ import viewport from './viewport';
 import transition from './commons/transition';
 import HomeView from './views/HomeView';
 import DetailView from './views/DetailView';
+import EndView from './views/EndView';
 
 const router = {
 
@@ -11,8 +12,9 @@ const router = {
 	start: function() {
         const AppRouter = Backbone.Router.extend({
             routes: {
-                '': 'toHome',
-                'detail/:id': 'toDetail'
+                '':                 'toHome',
+                'detail/:id':       'toDetail',
+                'end':              'toEnd'
             },
 
             /**
@@ -34,6 +36,9 @@ const router = {
             },
             toDetail(id) {
                 router.fly(DetailView, { id: id });
+            },
+            toEnd() {
+                router.fly(EndView);
             }
         });
 

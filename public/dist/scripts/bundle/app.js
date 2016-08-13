@@ -470,7 +470,8 @@ var consts = {
 
 consts.PRIORITYS = {
 	'home-view': 1000,
-	'detail-view': 1000
+	'detail-view': 2000,
+	'end-view': 3000
 };
 
 exports.default = consts;
@@ -700,6 +701,10 @@ var _DetailView = require('./views/DetailView');
 
 var _DetailView2 = _interopRequireDefault(_DetailView);
 
+var _EndView = require('./views/EndView');
+
+var _EndView2 = _interopRequireDefault(_EndView);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = {
@@ -711,7 +716,8 @@ var router = {
         var AppRouter = Backbone.Router.extend({
             routes: {
                 '': 'toHome',
-                'detail/:id': 'toDetail'
+                'detail/:id': 'toDetail',
+                'end': 'toEnd'
             },
 
             /**
@@ -734,6 +740,9 @@ var router = {
             },
             toDetail: function toDetail(id) {
                 router.fly(_DetailView2.default, { id: id });
+            },
+            toEnd: function toEnd() {
+                router.fly(_EndView2.default);
             }
         });
 
@@ -756,7 +765,7 @@ var router = {
 
 exports.default = router;
 
-},{"./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js","./viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js","./views/DetailView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js":[function(require,module,exports){
+},{"./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js","./viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js","./views/DetailView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js","./views/EndView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/EndView.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -851,6 +860,11 @@ var _transition2 = _interopRequireDefault(_transition);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var cache = [];
+var cid = 0;
+
+function getCid() {
+	return cid++;
+}
 
 var viewport = {
 	/**
@@ -860,55 +874,69 @@ var viewport = {
 		$('.modal').remove();
 
 		var len = cache.length;
-		var currentView = len === 0 ? null : cache[len - 1].value;
-		var targetView = new defination(args);
-
+		var currentCacheItem = cache[len - 1];
+		var currentView = len === 0 ? null : currentCacheItem.value;
+		var targetView = void 0;
 		var direction = 'push';
-		if (len > 0) {
-			var instance = this.getInstanceByDefination(defination);
-			if (instance) {
-				if (targetView !== instance) {
-					direction = 'pop';
+
+		if (len === 0) {
+			targetView = new defination(args);
+		} else {
+			var cacheItem = this.getCacheItemByDefination(defination);
+			if (!cacheItem) {
+				targetView = new defination(args);
+			} else {
+				if (currentCacheItem.key === defination) {
+					// target key is the current key
+					targetView = new defination(args);
+				} else {
+					if (cacheItem.key === defination) {
+						direction = 'pop';
+						targetView = cacheItem.value;
+					} else {
+						targetView = new defination(args);
+					}
 				}
 			}
 		}
 
+		console.log(direction);
+
 		var trfactory = _transition2.default.get(currentView, targetView, args.__animation__);
 		trfactory[direction](function () {
-			cache.forEach(function (item) {
-				item.__active__ = false;
-			});
-			targetView.__active__ = true;
-
 			if (direction === 'push') {
+				// push
+				targetView.__cid__ = 'view' + getCid();
 				cache.push({ key: defination, value: targetView });
 			}
 
 			var targetPriority = _consts2.default.PRIORITYS[targetView.className] || 0;
+
 			cache.forEach(function (item) {
 				var view = item.value;
-				if (!view.__active__) {
+				if (view.__cid__ !== targetView.__cid__) {
 					var priority = _consts2.default.PRIORITYS[view.className] || 0;
+					// find high priority and remove it
 					if (priority >= targetPriority) {
-						// remove view
 						view.remove();
 						cache.splice(cache.indexOf(item), 1);
 					}
 				}
 			});
+			console.log(cache);
 		});
 	},
 
-	getInstanceByDefination: function getInstanceByDefination(defination) {
-		var instance;
+	getCacheItemByDefination: function getCacheItemByDefination(defination) {
+		var result = void 0;
 		for (var i = 0; i < cache.length; i++) {
-			var view = cache[i];
-			if (view.key === defination) {
-				instance = view.value;
+			var item = cache[i];
+			if (item.key === defination) {
+				result = item;
 				break;
 			}
 		}
-		return instance;
+		return result;
 	}
 };
 
@@ -935,9 +963,14 @@ var _http2 = _interopRequireDefault(_http);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import EndView from './EndView';
+
 var DetailView = _Component2.default.extend({
     className: 'detail-view',
-    events: {},
+    events: {
+        'click .btn-back': 'onBack',
+        'click .btn-next': 'onNext'
+    },
 
     initialize: function initialize() {
         this.constructor.__super__.initialize.apply(this);
@@ -956,12 +989,66 @@ var DetailView = _Component2.default.extend({
     },
     setup: function setup(data) {
         this.$el.html((0, _detail2.default)(data));
+    },
+
+
+    /**************************** events ***************************/
+    onBack: function onBack() {
+        // APP.router.nav('');
+        history.go(-1);
+    },
+    onNext: function onNext() {
+        APP.router.nav('end', { datetime: Date.now() });
     }
 });
 
 exports.default = DetailView;
 
-},{"../../tpls/detail.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/detail.html","../utils/http":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js":[function(require,module,exports){
+},{"../../tpls/detail.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/detail.html","../utils/http":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/EndView.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Component = require('./generic/Component');
+
+var _Component2 = _interopRequireDefault(_Component);
+
+var _end = require('../../tpls/end.html');
+
+var _end2 = _interopRequireDefault(_end);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var EndView = _Component2.default.extend({
+    className: 'end-view',
+    events: {
+        'click .btn-back': 'onBack'
+    },
+
+    initialize: function initialize(data) {
+        this.constructor.__super__.initialize.apply(this);
+        this.data = data;
+    },
+    render: function render() {
+        this.constructor.__super__.render.apply(this);
+
+        this.data.datetime = this.data.datetime || 'xx/xx/xx';
+        this.$el.html((0, _end2.default)(this.data));
+        return this;
+    },
+
+
+    /**************************** events ***************************/
+    onBack: function onBack() {
+        history.go(-1);
+    }
+});
+
+exports.default = EndView;
+
+},{"../../tpls/end.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/end.html","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1087,7 +1174,18 @@ __p+='<h1 class="title">'+
 ((__t=( title ))==null?'':__t)+
 '</h1>\n\n<div class="desc">\n\t'+
 ((__t=( desc ))==null?'':__t)+
-'\n</div>';
+'\n</div>\n\n<div class="actions">\n\t<div class="btn btn-back">Back</div>\n\t<div class="btn btn-next">Next</div>\n</div>\n';
+}
+return __p;
+};
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/end.html":[function(require,module,exports){
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<h1 class="title">This is the last page.</h1>\n\n<div class="desc">createAt: '+
+((__t=( datetime ))==null?'':__t)+
+'</div>\n\n<div class="btn btn-back">Back</div>\n';
 }
 return __p;
 };
