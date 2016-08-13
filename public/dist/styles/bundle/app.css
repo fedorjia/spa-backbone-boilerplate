@@ -198,3 +198,37 @@ h6 {
   text-align: center;
   width: 100%;
 }
+.home-view {
+  overflow-y: auto;
+}
+.home-view h1 {
+  display: block;
+  text-align: center;
+  margin: 24px 8px;
+}
+.home-view .items .item {
+  padding: 12px;
+  line-height: 160%;
+}
+.home-view .items .item a {
+  text-decoration: none;
+}
+.home-view .items .item a .title {
+  text-decoration: underline;
+}
+.home-view .items .item a .desc {
+  color: #999;
+}
+.detail-view {
+  padding: 24px 12px;
+  overflow-y: auto;
+}
+.detail-view h1 {
+  display: block;
+  text-align: center;
+  margin: 24px 8px;
+}
+.detail-view .desc {
+  font-size: 15px;
+  line-height: 168%;
+}

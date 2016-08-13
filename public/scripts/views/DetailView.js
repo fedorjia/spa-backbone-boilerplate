@@ -1,5 +1,6 @@
 import Component from './generic/Component';
 import template from '../../tpls/detail.html';
+import http from '../utils/http';
 
 const DetailView = Component.extend({
     className: 'detail-view',
@@ -11,21 +12,19 @@ const DetailView = Component.extend({
 
     render() {
         this.constructor.__super__.render.apply(this);
-        // append to html
-        this.$el.html(template({}));
-        // add events, 阻止300ms延时
-        this.addEvents();
+        this.loadData();
         return this;
     },
 
-    /********************** events ********************/
-    onListen(event) {
-        if(this.fetchFlag) {
-            return;
-        }
-        this.fetchFlag = true;
-        $(event.target).velocity('callout.pulse', 200);
-        this.animate();
+    loadData() {
+        http.get('/assets/detail.json')
+            .then((result) => {
+                this.setup(result);
+            });
+    },
+
+    setup(data) {
+        this.$el.html(template(data));
     }
 });
 

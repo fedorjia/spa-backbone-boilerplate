@@ -1,25 +1,461 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/app.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/node_modules/whatwg-fetch/fetch.js":[function(require,module,exports){
+(function(self) {
+  'use strict';
+
+  if (self.fetch) {
+    return
+  }
+
+  var support = {
+    searchParams: 'URLSearchParams' in self,
+    iterable: 'Symbol' in self && 'iterator' in Symbol,
+    blob: 'FileReader' in self && 'Blob' in self && (function() {
+      try {
+        new Blob()
+        return true
+      } catch(e) {
+        return false
+      }
+    })(),
+    formData: 'FormData' in self,
+    arrayBuffer: 'ArrayBuffer' in self
+  }
+
+  function normalizeName(name) {
+    if (typeof name !== 'string') {
+      name = String(name)
+    }
+    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+      throw new TypeError('Invalid character in header field name')
+    }
+    return name.toLowerCase()
+  }
+
+  function normalizeValue(value) {
+    if (typeof value !== 'string') {
+      value = String(value)
+    }
+    return value
+  }
+
+  // Build a destructive iterator for the value list
+  function iteratorFor(items) {
+    var iterator = {
+      next: function() {
+        var value = items.shift()
+        return {done: value === undefined, value: value}
+      }
+    }
+
+    if (support.iterable) {
+      iterator[Symbol.iterator] = function() {
+        return iterator
+      }
+    }
+
+    return iterator
+  }
+
+  function Headers(headers) {
+    this.map = {}
+
+    if (headers instanceof Headers) {
+      headers.forEach(function(value, name) {
+        this.append(name, value)
+      }, this)
+
+    } else if (headers) {
+      Object.getOwnPropertyNames(headers).forEach(function(name) {
+        this.append(name, headers[name])
+      }, this)
+    }
+  }
+
+  Headers.prototype.append = function(name, value) {
+    name = normalizeName(name)
+    value = normalizeValue(value)
+    var list = this.map[name]
+    if (!list) {
+      list = []
+      this.map[name] = list
+    }
+    list.push(value)
+  }
+
+  Headers.prototype['delete'] = function(name) {
+    delete this.map[normalizeName(name)]
+  }
+
+  Headers.prototype.get = function(name) {
+    var values = this.map[normalizeName(name)]
+    return values ? values[0] : null
+  }
+
+  Headers.prototype.getAll = function(name) {
+    return this.map[normalizeName(name)] || []
+  }
+
+  Headers.prototype.has = function(name) {
+    return this.map.hasOwnProperty(normalizeName(name))
+  }
+
+  Headers.prototype.set = function(name, value) {
+    this.map[normalizeName(name)] = [normalizeValue(value)]
+  }
+
+  Headers.prototype.forEach = function(callback, thisArg) {
+    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+      this.map[name].forEach(function(value) {
+        callback.call(thisArg, value, name, this)
+      }, this)
+    }, this)
+  }
+
+  Headers.prototype.keys = function() {
+    var items = []
+    this.forEach(function(value, name) { items.push(name) })
+    return iteratorFor(items)
+  }
+
+  Headers.prototype.values = function() {
+    var items = []
+    this.forEach(function(value) { items.push(value) })
+    return iteratorFor(items)
+  }
+
+  Headers.prototype.entries = function() {
+    var items = []
+    this.forEach(function(value, name) { items.push([name, value]) })
+    return iteratorFor(items)
+  }
+
+  if (support.iterable) {
+    Headers.prototype[Symbol.iterator] = Headers.prototype.entries
+  }
+
+  function consumed(body) {
+    if (body.bodyUsed) {
+      return Promise.reject(new TypeError('Already read'))
+    }
+    body.bodyUsed = true
+  }
+
+  function fileReaderReady(reader) {
+    return new Promise(function(resolve, reject) {
+      reader.onload = function() {
+        resolve(reader.result)
+      }
+      reader.onerror = function() {
+        reject(reader.error)
+      }
+    })
+  }
+
+  function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader()
+    reader.readAsArrayBuffer(blob)
+    return fileReaderReady(reader)
+  }
+
+  function readBlobAsText(blob) {
+    var reader = new FileReader()
+    reader.readAsText(blob)
+    return fileReaderReady(reader)
+  }
+
+  function Body() {
+    this.bodyUsed = false
+
+    this._initBody = function(body) {
+      this._bodyInit = body
+      if (typeof body === 'string') {
+        this._bodyText = body
+      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+        this._bodyBlob = body
+      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+        this._bodyFormData = body
+      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+        this._bodyText = body.toString()
+      } else if (!body) {
+        this._bodyText = ''
+      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
+        // Only support ArrayBuffers for POST method.
+        // Receiving ArrayBuffers happens via Blobs, instead.
+      } else {
+        throw new Error('unsupported BodyInit type')
+      }
+
+      if (!this.headers.get('content-type')) {
+        if (typeof body === 'string') {
+          this.headers.set('content-type', 'text/plain;charset=UTF-8')
+        } else if (this._bodyBlob && this._bodyBlob.type) {
+          this.headers.set('content-type', this._bodyBlob.type)
+        } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+          this.headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8')
+        }
+      }
+    }
+
+    if (support.blob) {
+      this.blob = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as blob')
+        } else {
+          return Promise.resolve(new Blob([this._bodyText]))
+        }
+      }
+
+      this.arrayBuffer = function() {
+        return this.blob().then(readBlobAsArrayBuffer)
+      }
+
+      this.text = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return readBlobAsText(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as text')
+        } else {
+          return Promise.resolve(this._bodyText)
+        }
+      }
+    } else {
+      this.text = function() {
+        var rejected = consumed(this)
+        return rejected ? rejected : Promise.resolve(this._bodyText)
+      }
+    }
+
+    if (support.formData) {
+      this.formData = function() {
+        return this.text().then(decode)
+      }
+    }
+
+    this.json = function() {
+      return this.text().then(JSON.parse)
+    }
+
+    return this
+  }
+
+  // HTTP methods whose capitalization should be normalized
+  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+
+  function normalizeMethod(method) {
+    var upcased = method.toUpperCase()
+    return (methods.indexOf(upcased) > -1) ? upcased : method
+  }
+
+  function Request(input, options) {
+    options = options || {}
+    var body = options.body
+    if (Request.prototype.isPrototypeOf(input)) {
+      if (input.bodyUsed) {
+        throw new TypeError('Already read')
+      }
+      this.url = input.url
+      this.credentials = input.credentials
+      if (!options.headers) {
+        this.headers = new Headers(input.headers)
+      }
+      this.method = input.method
+      this.mode = input.mode
+      if (!body) {
+        body = input._bodyInit
+        input.bodyUsed = true
+      }
+    } else {
+      this.url = input
+    }
+
+    this.credentials = options.credentials || this.credentials || 'omit'
+    if (options.headers || !this.headers) {
+      this.headers = new Headers(options.headers)
+    }
+    this.method = normalizeMethod(options.method || this.method || 'GET')
+    this.mode = options.mode || this.mode || null
+    this.referrer = null
+
+    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+      throw new TypeError('Body not allowed for GET or HEAD requests')
+    }
+    this._initBody(body)
+  }
+
+  Request.prototype.clone = function() {
+    return new Request(this)
+  }
+
+  function decode(body) {
+    var form = new FormData()
+    body.trim().split('&').forEach(function(bytes) {
+      if (bytes) {
+        var split = bytes.split('=')
+        var name = split.shift().replace(/\+/g, ' ')
+        var value = split.join('=').replace(/\+/g, ' ')
+        form.append(decodeURIComponent(name), decodeURIComponent(value))
+      }
+    })
+    return form
+  }
+
+  function headers(xhr) {
+    var head = new Headers()
+    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
+    pairs.forEach(function(header) {
+      var split = header.trim().split(':')
+      var key = split.shift().trim()
+      var value = split.join(':').trim()
+      head.append(key, value)
+    })
+    return head
+  }
+
+  Body.call(Request.prototype)
+
+  function Response(bodyInit, options) {
+    if (!options) {
+      options = {}
+    }
+
+    this.type = 'default'
+    this.status = options.status
+    this.ok = this.status >= 200 && this.status < 300
+    this.statusText = options.statusText
+    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+    this.url = options.url || ''
+    this._initBody(bodyInit)
+  }
+
+  Body.call(Response.prototype)
+
+  Response.prototype.clone = function() {
+    return new Response(this._bodyInit, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: new Headers(this.headers),
+      url: this.url
+    })
+  }
+
+  Response.error = function() {
+    var response = new Response(null, {status: 0, statusText: ''})
+    response.type = 'error'
+    return response
+  }
+
+  var redirectStatuses = [301, 302, 303, 307, 308]
+
+  Response.redirect = function(url, status) {
+    if (redirectStatuses.indexOf(status) === -1) {
+      throw new RangeError('Invalid status code')
+    }
+
+    return new Response(null, {status: status, headers: {location: url}})
+  }
+
+  self.Headers = Headers
+  self.Request = Request
+  self.Response = Response
+
+  self.fetch = function(input, init) {
+    return new Promise(function(resolve, reject) {
+      var request
+      if (Request.prototype.isPrototypeOf(input) && !init) {
+        request = input
+      } else {
+        request = new Request(input, init)
+      }
+
+      var xhr = new XMLHttpRequest()
+
+      function responseURL() {
+        if ('responseURL' in xhr) {
+          return xhr.responseURL
+        }
+
+        // Avoid security warnings on getResponseHeader when not allowed by CORS
+        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+          return xhr.getResponseHeader('X-Request-URL')
+        }
+
+        return
+      }
+
+      xhr.onload = function() {
+        var options = {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: headers(xhr),
+          url: responseURL()
+        }
+        var body = 'response' in xhr ? xhr.response : xhr.responseText
+        resolve(new Response(body, options))
+      }
+
+      xhr.onerror = function() {
+        reject(new TypeError('Network request failed'))
+      }
+
+      xhr.ontimeout = function() {
+        reject(new TypeError('Network request failed'))
+      }
+
+      xhr.open(request.method, request.url, true)
+
+      if (request.credentials === 'include') {
+        xhr.withCredentials = true
+      }
+
+      if ('responseType' in xhr && support.blob) {
+        xhr.responseType = 'blob'
+      }
+
+      request.headers.forEach(function(value, name) {
+        xhr.setRequestHeader(name, value)
+      })
+
+      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
+    })
+  }
+  self.fetch.polyfill = true
+})(typeof self !== 'undefined' ? self : this);
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/app.js":[function(require,module,exports){
 'use strict';
 
-var _viewport = require('./commons/viewport');
+var _router = require('./router');
 
-var _viewport2 = _interopRequireDefault(_viewport);
-
-var _HomeView = require('./views/HomeView');
-
-var _HomeView2 = _interopRequireDefault(_HomeView);
+var _router2 = _interopRequireDefault(_router);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.APP = {};
 
 /**
  * APP Entry
  */
 // Application entry point.
 $(function () {
-  _viewport2.default.push(_HomeView2.default);
+	_router2.default.start();
+
+	APP.router = _router2.default.appRouter;
+	// APP.router.nav("/");
 }());
 
-},{"./commons/viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/viewport.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js":[function(require,module,exports){
+},{"./router":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/router.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29,244 +465,503 @@ Object.defineProperty(exports, "__esModule", {
  * constants
  */
 var consts = {
-	DEBUG: 2
+	DEBUG: 1
 };
-
-switch (consts.DEBUG) {
-	case 1:
-		//development
-		consts.DOMAIN = 'http://192.168.1.100:3016';
-		consts.WX_API_URL = 'http://wxapi.postio.me';
-		consts.WX_APPID = 'wx50d746e9d0f0af1d';
-		break;
-	case 2:
-		//test
-		consts.DOMAIN = 'http://nana.postio.me';
-		consts.WX_API_URL = 'http://wxapi.postio.me';
-		consts.WX_APPID = 'wx50d746e9d0f0af1d';
-		break;
-	case 3:
-		//production
-		consts.DOMAIN = 'http://nana.postio.me';
-		consts.WX_API_URL = 'http://wxapi.postio.me';
-		consts.WX_APPID = 'wx50d746e9d0f0af1d';
-		break;
-}
-
-consts.DOMAIN_SHORT = consts.DOMAIN.substr(7);
-
-consts.WX_SHARE_TITLE_DEFAULT = 'Title';
-consts.WX_SHARE_DESC_DEFAULT = 'Desc';
-consts.WX_SHARE_ICON = consts.DOMAIN + '/icons/share_icon.png';
-consts.WX_SHARED_PAGE = consts.DOMAIN + '/';
 
 consts.PRIORITYS = {
 	'home-view': 1000,
-	'speak-view': 1000
+	'detail-view': 1000
 };
 
 exports.default = consts;
 
-},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/viewport.js":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _consts = require('./consts');
+var _NoneTransition = require('../plugins/transition/NoneTransition');
 
-var _consts2 = _interopRequireDefault(_consts);
+var _NoneTransition2 = _interopRequireDefault(_NoneTransition);
+
+var _FadeTransition = require('../plugins/transition/FadeTransition');
+
+var _FadeTransition2 = _interopRequireDefault(_FadeTransition);
+
+var _SlideTransition = require('../plugins/transition/SlideTransition');
+
+var _SlideTransition2 = _interopRequireDefault(_SlideTransition);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var appViews = [];
+/***
+ * transition
+ */
+var transition = {
 
-var viewport = {
+	defaultAnimation: 'none',
 
-	options: {
-		animation: 'fade',
-		duration: '280' // animation duration
-	},
-
-	/**
-  * 进入页面
-     */
-	push: function push(defination, options, arg1, arg2, arg3) {
-		var instance = new defination(arg1, arg2, arg3);
-		instance.render();
-
-		// push array
-		appViews.push({ key: defination, value: instance });
-
-		// place options
-		options = options || {};
-		for (var option in this.options) {
-			if (this.options.hasOwnProperty(option)) {
-				if (options[option] === undefined) {
-					options[option] = this.options[option];
-				}
-			}
-		}
-
-		var len = appViews.length;
-		if (len > 1) {
-			// current View disappear
-			var currentView = appViews[len - 2].value;
-			options.animationType = this.getAnimationType(options.animation, 'out');
-			currentView.didDisappear(options);
-		}
-
-		var cloneOptions = _.clone(options);
-		// target view appare
-		cloneOptions.animationType = this.getAnimationType(options.animation, 'in');
-		instance.didAppear(cloneOptions);
-	},
-
-
-	/**
-  * 离开页面
-     */
-	pop: function pop(options) {
-		var _this = this;
-
-		var len = appViews.length;
-		if (len > 1) {
-			var option;
-
-			(function () {
-				// place options
-				options = options || {};
-				for (option in _this.options) {
-					if (_this.options.hasOwnProperty(option)) {
-						if (options[option] === undefined) {
-							options[option] = _this.options[option];
-						}
-					}
-				}
-
-				// current view disappear
-				var currentView = appViews[len - 1].value;
-				options.animationType = _this.getAnimationType(options.animation, 'out');
-				currentView.didDisappear(options);
-
-				var cloneOptions = _.clone(options);
-				// prev view appear
-				var prevView = appViews[len - 2].value;
-				cloneOptions.animationType = _this.getAnimationType(options.animation, 'in');
-				prevView.didAppear(cloneOptions, function () {
-					currentView.remove();
-				});
-			})();
-		}
-	},
-
-
-	/**
-  * 切换页面
-     */
-	transform: function transform(defination, arg1, arg2, arg3) {
-		var len = appViews.length;
-		if (len > 0) {
-			var currentView = appViews[len - 1].value;
-			currentView.didDisappear();
-		}
-
-		var instance = this.getInstanceByDefination(defination);
-		if (!instance) {
-			// push
-			instance = new defination(arg1, arg2, arg3);
-			instance.render();
-			instance.didAppear();
-			appViews.push({ key: defination, value: instance });
-		} else {
-			instance.didAppear();
-		}
-
-		var viewPriority = _consts2.default.PRIORITYS[instance.className];
-		len = appViews.length;
-
-		if (len > 1) {
-			console.log(viewPriority);
-			for (var prop in _consts2.default.PRIORITYS) {
-				if (_consts2.default.PRIORITYS.hasOwnProperty(prop)) {
-					var priority = _consts2.default.PRIORITYS[prop];
-
-					// find high priority and destroy them
-					if (priority >= viewPriority) {
-						var view = this.getViewByClassName(prop);
-						if (view) {
-							if (view.key !== defination) {
-								// destroy viewObject
-								var viewObj = view.value;
-								viewObj.didDisappear();
-								viewObj.remove();
-
-								// splice array
-								appViews.splice(appViews.indexOf(view), 1);
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-
-
-	/**
-  * get animation type
-     */
-	getAnimationType: function getAnimationType(animation, which) {
-		var result = '';
-		switch (animation) {
-			case 'fade':
-				if (which === 'in') {
-					result = 'fadeIn';
-				} else {
-					result = 'fadeOut';
-				}
-				break;
-		}
-		return result;
-	},
-
-
-	/**
-  * get instance of defination
-     */
-	getInstanceByDefination: function getInstanceByDefination(defination) {
-		var viewObject = void 0;
-		for (var i = 0; i < appViews.length; i++) {
-			var view = appViews[i];
-			if (view.key === defination) {
-				viewObject = view.value;
-				break;
-			}
-		}
-		return viewObject;
-	},
-
-
-	/**
-  * get view by className
-     */
-	getViewByClassName: function getViewByClassName(className) {
+	get: function get(currentView, targetView, animation) {
 		var result = void 0;
-		for (var i = 0; i < appViews.length; i++) {
-			var view = appViews[i];
-			var object = view.value;
-			if (object.className === className) {
-				result = view;
-				break;
-			}
+		switch (animation) {
+			case 'none':
+				{
+					result = new _NoneTransition2.default(currentView, targetView);
+					break;
+				}
+			case 'fade':
+				{
+					result = new _FadeTransition2.default(currentView, targetView);
+					break;
+				}
+			case 'slide':
+				{
+					result = new _SlideTransition2.default(currentView, targetView).animate();
+					break;
+				}
 		}
 		return result;
 	}
 };
 
+exports.default = transition;
+
+},{"../plugins/transition/FadeTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js","../plugins/transition/NoneTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/NoneTransition.js","../plugins/transition/SlideTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideTransition.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js":[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/***
+ * FadeTransition
+ */
+var FadeTransition = function () {
+    function FadeTransition(currentView, targetView) {
+        _classCallCheck(this, FadeTransition);
+
+        this.currentView = currentView;
+        this.targetView = targetView;
+    }
+
+    _createClass(FadeTransition, [{
+        key: "animatePush",
+        value: function animatePush(callback) {
+            this.currentView.didDisappear();
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }, {
+        key: "animatePop",
+        value: function animatePop(callback) {
+            this.currentView.didDisappear();
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }]);
+
+    return FadeTransition;
+}();
+
+exports.default = FadeTransition;
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/NoneTransition.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/***
+ * NoneTransition
+ */
+var NoneTransition = function () {
+    function NoneTransition(currentView, targetView) {
+        _classCallCheck(this, NoneTransition);
+
+        this.currentView = currentView;
+        this.targetView = targetView;
+    }
+
+    _createClass(NoneTransition, [{
+        key: 'push',
+        value: function push(callback) {
+            if (this.currentView) {
+                this.currentView.$el.css({ display: 'none', opacity: 0 });
+                this.currentView.didDisappear();
+            }
+            this.targetView.render();
+            this.targetView.$el.css({ display: 'block', opacity: 1 });
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }, {
+        key: 'pop',
+        value: function pop(callback) {
+            this.currentView.$el.css({ display: 'none', opacity: 0 });
+            this.currentView.didDisappear();
+
+            this.targetView.$el.css({ display: 'block', opacity: 1 });
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }]);
+
+    return NoneTransition;
+}();
+
+exports.default = NoneTransition;
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideTransition.js":[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/***
+ * SlideTransition
+ */
+var SlideTransition = function () {
+    function SlideTransition(currentView, targetView) {
+        _classCallCheck(this, SlideTransition);
+
+        this.currentView = currentView;
+        this.targetView = targetView;
+    }
+
+    _createClass(SlideTransition, [{
+        key: "animatePush",
+        value: function animatePush(callback) {
+            this.currentView.didDisappear();
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }, {
+        key: "animatePop",
+        value: function animatePop(callback) {
+            this.currentView.didDisappear();
+            this.targetView.didAppear();
+            if (callback) {
+                callback();
+            }
+        }
+    }]);
+
+    return SlideTransition;
+}();
+
+exports.default = SlideTransition;
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/router.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _viewport = require('./viewport');
+
+var _viewport2 = _interopRequireDefault(_viewport);
+
+var _transition = require('./commons/transition');
+
+var _transition2 = _interopRequireDefault(_transition);
+
+var _HomeView = require('./views/HomeView');
+
+var _HomeView2 = _interopRequireDefault(_HomeView);
+
+var _DetailView = require('./views/DetailView');
+
+var _DetailView2 = _interopRequireDefault(_DetailView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var router = {
+
+    /**
+     * start router
+     */
+    start: function start() {
+        var AppRouter = Backbone.Router.extend({
+            routes: {
+                '': 'toHome',
+                'detail/:id': 'toDetail'
+            },
+
+            /**
+             * navigate
+             */
+            nav: function nav(path, params, animation, trigger) {
+                if (trigger === undefined) {
+                    trigger = true;
+                }
+                this.params = { __animation__: animation || _transition2.default.defaultAnimation };
+                Object.assign(this.params, params || {});
+
+                this.navigate(path, { trigger: trigger });
+            },
+
+
+            /*************** router handlers **************/
+            toHome: function toHome() {
+                router.fly(_HomeView2.default);
+            },
+            toDetail: function toDetail(id) {
+                router.fly(_DetailView2.default, { id: id });
+            }
+        });
+
+        this.appRouter = new AppRouter();
+        Backbone.history.start();
+        // Backbone.history.start({pushState:true, root: '/'});
+    },
+
+    /**
+     * transmit view
+     */
+    fly: function fly(view, params) {
+        // merge params
+        var mParams = this.appRouter.params || { __animation__: _transition2.default.defaultAnimation };
+        Object.assign(mParams, params || {});
+        _viewport2.default.fly(view, mParams);
+        this.appRouter.params = null;
+    }
+};
+
+exports.default = router;
+
+},{"./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js","./viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js","./views/DetailView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+require('whatwg-fetch');
+
+var http = {
+	/**
+  * get
+     */
+	get: function get(url) {
+		var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+		var i = 0;
+		var str = '';
+		for (var prop in params) {
+			if (params.hasOwnProperty(prop)) {
+				str = i === 0 ? str + ('?' + prop + '=' + params[prop]) : str + ('&' + prop + '=' + params[prop]);
+			}
+			i++;
+		}
+
+		return fetch(url + str, {
+			method: 'GET'
+		}).then(function (response) {
+			return response.json().then(function (json) {
+				return { json: json, response: response };
+			});
+		}).then(function (_ref) {
+			var json = _ref.json;
+			var response = _ref.response;
+
+			if (!response.ok) {
+				return Promise.reject(json);
+			}
+			return json;
+		}).catch(function (ex) {
+			return Promise.reject(ex);
+		});
+	},
+
+
+	// post
+	post: function post(url, params) {
+		var formData = new FormData();
+		for (var prop in params) {
+			if (params.hasOwnProperty(prop)) {
+				formData.append(prop, params[prop]);
+			}
+		}
+
+		return fetch(url, {
+			method: 'POST',
+			body: formData
+		}).then(function (response) {
+			return response.json().then(function (json) {
+				return { json: json, response: response };
+			});
+		}).then(function (_ref2) {
+			var json = _ref2.json;
+			var response = _ref2.response;
+
+			if (!response.ok) {
+				return Promise.reject(json);
+			}
+			return json;
+		}).catch(function (ex) {
+			return Promise.reject(ex);
+		});
+	}
+};
+
+exports.default = http;
+
+},{"whatwg-fetch":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/node_modules/whatwg-fetch/fetch.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _consts = require('./commons/consts');
+
+var _consts2 = _interopRequireDefault(_consts);
+
+var _transition = require('./commons/transition');
+
+var _transition2 = _interopRequireDefault(_transition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var cache = [];
+
+var viewport = {
+	/**
+  * view transition
+     */
+	fly: function fly(defination, args) {
+		$('.modal').remove();
+
+		var len = cache.length;
+		var currentView = len === 0 ? null : cache[len - 1].value;
+		var targetView = new defination(args);
+
+		var direction = 'push';
+		if (len > 0) {
+			var instance = this.getInstanceByDefination(defination);
+			if (instance) {
+				if (targetView !== instance) {
+					direction = 'pop';
+				}
+			}
+		}
+
+		var trfactory = _transition2.default.get(currentView, targetView, args.__animation__);
+		trfactory[direction](function () {
+			cache.forEach(function (item) {
+				item.__active__ = false;
+			});
+			targetView.__active__ = true;
+
+			if (direction === 'push') {
+				cache.push({ key: defination, value: targetView });
+			}
+
+			var targetPriority = _consts2.default.PRIORITYS[targetView.className] || 0;
+			cache.forEach(function (item) {
+				var view = item.value;
+				if (!view.__active__) {
+					var priority = _consts2.default.PRIORITYS[view.className] || 0;
+					if (priority >= targetPriority) {
+						// remove view
+						view.remove();
+						cache.splice(cache.indexOf(item), 1);
+					}
+				}
+			});
+		});
+	},
+
+	getInstanceByDefination: function getInstanceByDefination(defination) {
+		var instance;
+		for (var i = 0; i < cache.length; i++) {
+			var view = cache[i];
+			if (view.key === defination) {
+				instance = view.value;
+				break;
+			}
+		}
+		return instance;
+	}
+};
+
 exports.default = viewport;
 
-},{"./consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js":[function(require,module,exports){
+},{"./commons/consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js","./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _Component = require('./generic/Component');
+
+var _Component2 = _interopRequireDefault(_Component);
+
+var _detail = require('../../tpls/detail.html');
+
+var _detail2 = _interopRequireDefault(_detail);
+
+var _http = require('../utils/http');
+
+var _http2 = _interopRequireDefault(_http);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DetailView = _Component2.default.extend({
+    className: 'detail-view',
+    events: {},
+
+    initialize: function initialize() {
+        this.constructor.__super__.initialize.apply(this);
+    },
+    render: function render() {
+        this.constructor.__super__.render.apply(this);
+        this.loadData();
+        return this;
+    },
+    loadData: function loadData() {
+        var _this = this;
+
+        _http2.default.get('/assets/detail.json').then(function (result) {
+            _this.setup(result);
+        });
+    },
+    setup: function setup(data) {
+        this.$el.html((0, _detail2.default)(data));
+    }
+});
+
+exports.default = DetailView;
+
+},{"../../tpls/detail.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/detail.html","../utils/http":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -281,9 +976,15 @@ var _home = require('../../tpls/home.html');
 
 var _home2 = _interopRequireDefault(_home);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _http = require('../utils/http');
 
-// import DetailView from './DetailView';
+var _http2 = _interopRequireDefault(_http);
+
+var _ItemView = require('./items/ItemView');
+
+var _ItemView2 = _interopRequireDefault(_ItemView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HomeView = _Component2.default.extend({
     className: 'home-view',
@@ -291,19 +992,35 @@ var HomeView = _Component2.default.extend({
 
     initialize: function initialize() {
         this.constructor.__super__.initialize.apply(this);
-        this.name = 'backbone';
+        this.name = 'Single Page Applcation With Backbone';
     },
     render: function render() {
         this.constructor.__super__.render.apply(this);
-        // append to html
+        // load data
+        this.loadData();
+        // render html
         this.$el.html((0, _home2.default)({ name: this.name }));
         return this;
+    },
+    loadData: function loadData() {
+        var _this = this;
+
+        _http2.default.get('/assets/list.json').then(function (result) {
+            _this.setup(result);
+        });
+    },
+    setup: function setup(data) {
+        var $items = this.$el.find('.items');
+        data.forEach(function (obj) {
+            var item = new _ItemView2.default(obj);
+            $items.append(item.render().el);
+        });
     }
 });
 
 exports.default = HomeView;
 
-},{"../../tpls/home.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/home.html","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js":[function(require,module,exports){
+},{"../../tpls/home.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/home.html","../utils/http":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js","./items/ItemView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/items/ItemView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/generic/Component.js":[function(require,module,exports){
 'use strict';
 
 /***
@@ -311,64 +1028,92 @@ exports.default = HomeView;
  */
 var Component = Backbone.View.extend({
 
-   initialize: function initialize() {},
+    initialize: function initialize() {},
 
-   render: function render() {
-      this.$el.addClass('page');
-      $('body').append(this.$el);
-      return this;
-   },
+    render: function render() {
+        this.$el.addClass('page');
+        $('body').append(this.$el);
+        return this;
+    },
 
-   remove: function remove() {
-      this.$el.remove();
-   },
+    remove: function remove() {
+        this.$el.remove();
+    },
 
-   /***** life cycle  ****/
+    /***** life cycle  ****/
 
-   didDisappear: function didDisappear(options, callback) {
-      if (options.animationType) {
-         this.$el.velocity(options.animationType, {
-            duration: options.duration,
-            display: 'none',
-            complete: function () {
-               this.$el.css({ 'opacity': 0 });
-               if (callback) {
-                  callback();
-               }
-            }.bind(this)
-         });
-      } else {
-         this.$el.css({ 'opacity': 0, 'display': 'none' });
-      }
-   },
+    didDisappear: function didDisappear(options, callback) {},
 
-   didAppear: function didAppear(options, callback) {
-      if (options.animationType) {
-         this.$el.velocity(options.animationType, {
-            duration: options.duration,
-            display: 'block',
-            complete: function () {
-               this.$el.css({ 'opacity': 1 });
-               if (callback) {
-                  callback();
-               }
-            }.bind(this)
-         });
-      } else {
-         this.$el.css({ 'opacity': 1, 'display': 'block' });
-      }
-   }
+    didAppear: function didAppear(options, callback) {}
 });
 
 module.exports = Component;
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/items/ItemView.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _item = require('../../../tpls/items/item.html');
+
+var _item2 = _interopRequireDefault(_item);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ItemView = Backbone.View.extend({
+    events: {},
+    tagName: 'li',
+
+    initialize: function initialize(data) {
+        this.data = data;
+    },
+    render: function render() {
+        // append to html
+        this.$el.addClass('item');
+        this.$el.html((0, _item2.default)(this.data));
+        return this;
+    }
+});
+
+exports.default = ItemView;
+
+},{"../../../tpls/items/item.html":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/items/item.html"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/detail.html":[function(require,module,exports){
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<h1 class="title">'+
+((__t=( title ))==null?'':__t)+
+'</h1>\n\n<div class="desc">\n\t'+
+((__t=( desc ))==null?'':__t)+
+'\n</div>';
+}
+return __p;
+};
 
 },{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/home.html":[function(require,module,exports){
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<div class="">\n\thello world, build SPA with '+
+__p+='<h1 class="">\n\thello world, '+
 ((__t=( name ))==null?'':__t)+
-'\n</div>\n\n<ul class="items">\n\n</ul>';
+'\n</h1>\n\n<ul class="items">\n\n</ul>';
+}
+return __p;
+};
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/tpls/items/item.html":[function(require,module,exports){
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<a href="#detail/'+
+((__t=( id ))==null?'':__t)+
+'">\n    <div class="title p4">'+
+((__t=( title ))==null?'':__t)+
+'</div>\n    <div class="desc">'+
+((__t=( desc ))==null?'':__t)+
+'</div>\n</a>';
 }
 return __p;
 };

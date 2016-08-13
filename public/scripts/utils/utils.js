@@ -3,8 +3,8 @@
  */
 const utils = {
     /**
-	 * 获取URL的paramter value
-	 * */
+	 * get parameter value of url
+	 **/
     getParameter(name) {
 		const url = location.href;
 		let start = url.indexOf('?')+1;
@@ -30,27 +30,7 @@ const utils = {
 			}
 		}
 		return value;
-    },
-
-	/**
-	 * get transition event
-     */
-    whichTransitionEvent() {
-		let t;
-		const el = document.createElement('fakeelement');
-		const transitions = {
-			'transition':'transitionend',
-			'OTransition':'oTransitionEnd',
-			'MozTransition':'transitionend',
-			'WebkitTransition':'webkitTransitionEnd'
-		};
-
-		for(t in transitions){
-			if( el.style[t] !== undefined ){
-				return transitions[t];
-			}
-		}
-	}
+    }
 };
 
 export default utils;

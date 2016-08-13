@@ -1,15 +1,17 @@
-const Handler = () => { };
+/***
+ * Message Handler
+ */
+class Handler {
 
-Handler.prototype = {
-	send(flag, args) {
-		if (this.callback) {
-			this.callback(flag, args);
-		}
-	},
-
-	onReceive() {
+	constructor(callback) {
 		this.callback = callback;
 	}
-};
+
+	send(what, args) {
+		if (this.callback) {
+			this.callback(what, args);
+		}
+	}
+}
 
 export default Handler;

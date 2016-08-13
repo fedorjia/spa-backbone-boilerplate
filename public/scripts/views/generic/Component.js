@@ -20,37 +20,11 @@ const Component = Backbone.View.extend({
   /***** life cycle  ****/
 
   didDisappear: function(options, callback) {
-     if(options.animationType) {
-        this.$el.velocity(options.animationType, {
-          duration: options.duration,
-          display: 'none',
-          complete: function() {
-            this.$el.css({ 'opacity': 0 });
-            if(callback) {
-                callback();
-            }
-          }.bind(this)
-        });
-     } else {
-        this.$el.css({ 'opacity': 0, 'display': 'none' });
-     }
+
   },
 
   didAppear: function(options, callback) {
-     if(options.animationType) {
-        this.$el.velocity(options.animationType, {
-          duration: options.duration,
-          display: 'block',
-          complete: function() {
-            this.$el.css({ 'opacity': 1 });
-            if(callback) {
-                callback();
-            }
-          }.bind(this)
-        });
-     } else {
-        this.$el.css({ 'opacity': 1, 'display': 'block' });
-     }
+     
   }
 });
 

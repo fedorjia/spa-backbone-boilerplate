@@ -1,10 +1,14 @@
 // Application entry point.
-import viewport from './commons/viewport';
-import HomeView from './views/HomeView';
+import router from './router';
+
+window.APP = {};
 
 /**
  * APP Entry
  */
 $(function() {
-	viewport.push(HomeView);
+	router.start();
+
+	APP.router = router.appRouter;
+	// APP.router.nav("/");
 }());

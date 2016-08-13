@@ -35,6 +35,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "whatwg-fetch": "^1.0.0"
   }
 }

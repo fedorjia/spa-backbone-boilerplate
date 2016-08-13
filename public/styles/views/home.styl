@@ -2,5 +2,25 @@
 @import "../utils/mixins";
 
 .home-view {
-
+    h1 {
+      display : block;
+      text-align : center;
+      margin 24px 8px;
+    }
+    overflow-y : auto;
+    .items {
+        .item {
+            padding 12px;
+            line-height: 160%;
+            a {
+              text-decoration none;
+              .title {
+                text-decoration: underline;
+              }
+              .desc {
+                  color: $color-black-light;
+              }
+            }
+        }
+    }
 }
