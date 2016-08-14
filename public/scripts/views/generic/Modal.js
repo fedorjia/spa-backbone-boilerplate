@@ -3,12 +3,12 @@
  */
 const Modal = Backbone.View.extend({
   
-  initialize: function() {
+  initialize() {
 
   },
 
-  render: function() {
-    	this.$el.addClass('modal');
+  render() {
+      this.$el.addClass('modal');
       $('body').append(this.$el);
 
       $('.modal-mask').velocity({
@@ -28,20 +28,20 @@ const Modal = Backbone.View.extend({
       this.$el.remove();
   },
 
-  dismiss: function() {
+  dismiss() {
       $('.modal-mask').velocity("fadeOut", 400);
       this.didDisappear();
   },
 
   /***** life cycle  ****/
 
-  didDisappear: function() {
+  didDisappear() {
      this.$el.velocity("fadeOut", 400, function() {
         this.remove();
      }.bind(this));
   },
 
-  didAppear: function() {
+  didAppear() {
 	   this.$el.velocity("fadeIn");
   }
 });

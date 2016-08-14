@@ -3,27 +3,27 @@
  */
 const Component = Backbone.View.extend({
   
-  initialize: function() {
+  initialize() {
 
   },
 
-  render: function() {
+  render() {
       this.$el.addClass('page');
       $('body').append(this.$el);
       return this;
   },
 
-  remove: function() {
+  remove() {
       this.$el.remove();
   },
 
   /***** life cycle  ****/
 
-  didDisappear: function(options, callback) {
+  didDisappear() {
 
   },
 
-  didAppear: function(options, callback) {
+  didAppear() {
      
   }
 });

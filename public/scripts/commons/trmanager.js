@@ -4,7 +4,7 @@ import SlideHorizontalTransition from '../plugins/transition/SlideHorizontalTran
 import SlideVerticalTransition from '../plugins/transition/SlideVerticalTransition';
 
 /***
- * trmanager
+ * transition manager
  */
 const trmanager = {
 
