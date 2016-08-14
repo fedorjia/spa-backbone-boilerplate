@@ -476,7 +476,7 @@ consts.PRIORITYS = {
 
 exports.default = consts;
 
-},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/trmanager.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -491,35 +491,50 @@ var _FadeTransition = require('../plugins/transition/FadeTransition');
 
 var _FadeTransition2 = _interopRequireDefault(_FadeTransition);
 
-var _SlideTransition = require('../plugins/transition/SlideTransition');
+var _SlideHorizontalTransition = require('../plugins/transition/SlideHorizontalTransition');
 
-var _SlideTransition2 = _interopRequireDefault(_SlideTransition);
+var _SlideHorizontalTransition2 = _interopRequireDefault(_SlideHorizontalTransition);
+
+var _SlideVerticalTransition = require('../plugins/transition/SlideVerticalTransition');
+
+var _SlideVerticalTransition2 = _interopRequireDefault(_SlideVerticalTransition);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***
- * transition
+ * trmanager
  */
-var transition = {
+var trmanager = {
 
-	defaultAnimation: 'none',
+	defaultAnimation: 'fade', // none, fade, slide-h, slide-v
 
 	get: function get(currentView, targetView, animation) {
 		var result = void 0;
-		switch (animation) {
+
+		var animationType = animation;
+		if (_.isObject(animation)) {
+			animationType = animation.type;
+		}
+
+		switch (animationType) {
 			case 'none':
 				{
-					result = new _NoneTransition2.default(currentView, targetView);
+					result = new _NoneTransition2.default(currentView, targetView, animation);
 					break;
 				}
 			case 'fade':
 				{
-					result = new _FadeTransition2.default(currentView, targetView);
+					result = new _FadeTransition2.default(currentView, targetView, animation);
 					break;
 				}
-			case 'slide':
+			case 'slide-h':
 				{
-					result = new _SlideTransition2.default(currentView, targetView).animate();
+					result = new _SlideHorizontalTransition2.default(currentView, targetView, animation);
+					break;
+				}
+			case 'slide-v':
+				{
+					result = new _SlideVerticalTransition2.default(currentView, targetView, animation);
 					break;
 				}
 		}
@@ -527,10 +542,10 @@ var transition = {
 	}
 };
 
-exports.default = transition;
+exports.default = trmanager;
 
-},{"../plugins/transition/FadeTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js","../plugins/transition/NoneTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/NoneTransition.js","../plugins/transition/SlideTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideTransition.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js":[function(require,module,exports){
-"use strict";
+},{"../plugins/transition/FadeTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js","../plugins/transition/NoneTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/NoneTransition.js","../plugins/transition/SlideHorizontalTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideHorizontalTransition.js","../plugins/transition/SlideVerticalTransition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideVerticalTransition.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/FadeTransition.js":[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -552,28 +567,61 @@ var FadeTransition = function () {
     }
 
     _createClass(FadeTransition, [{
-        key: "animatePush",
-        value: function animatePush(callback) {
-            this.currentView.didDisappear();
-            this.targetView.didAppear();
-            if (callback) {
-                callback();
+        key: 'push',
+        value: function push(callback) {
+            var _this = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', FadeTransition.duration, function () {
+                    _this.currentView.didDisappear();
+                });
             }
+
+            // target view
+            this.targetView.render();
+            this.targetView.$el.velocity('fadeIn', {
+                delay: FadeTransition.duration / 2,
+                duration: FadeTransition.duration,
+                complete: function complete() {
+                    _this.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
         }
     }, {
-        key: "animatePop",
-        value: function animatePop(callback) {
-            this.currentView.didDisappear();
-            this.targetView.didAppear();
-            if (callback) {
-                callback();
+        key: 'pop',
+        value: function pop(callback) {
+            var _this2 = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', FadeTransition.duration, function () {
+                    _this2.currentView.didDisappear();
+                });
             }
+
+            // target view
+            this.targetView.$el.velocity('fadeIn', {
+                delay: FadeTransition.duration / 2,
+                duration: FadeTransition.duration,
+                complete: function complete() {
+                    _this2.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
         }
     }]);
 
     return FadeTransition;
 }();
 
+FadeTransition.type = 'fade';
+FadeTransition.duration = 320;
 exports.default = FadeTransition;
 
 },{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/NoneTransition.js":[function(require,module,exports){
@@ -629,10 +677,11 @@ var NoneTransition = function () {
     return NoneTransition;
 }();
 
+NoneTransition.type = 'none';
 exports.default = NoneTransition;
 
-},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideTransition.js":[function(require,module,exports){
-"use strict";
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideHorizontalTransition.js":[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -643,40 +692,163 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /***
- * SlideTransition
+ * SlideHorizontalTransition
  */
-var SlideTransition = function () {
-    function SlideTransition(currentView, targetView) {
-        _classCallCheck(this, SlideTransition);
+var SlideHorizontalTransition = function () {
+    function SlideHorizontalTransition(currentView, targetView) {
+        _classCallCheck(this, SlideHorizontalTransition);
 
         this.currentView = currentView;
         this.targetView = targetView;
     }
 
-    _createClass(SlideTransition, [{
-        key: "animatePush",
-        value: function animatePush(callback) {
-            this.currentView.didDisappear();
-            this.targetView.didAppear();
-            if (callback) {
-                callback();
+    _createClass(SlideHorizontalTransition, [{
+        key: 'push',
+        value: function push(callback) {
+            var _this = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, function () {
+                    _this.currentView.didDisappear();
+                });
             }
+
+            var delay = this.currentView ? SlideHorizontalTransition.duration / 2 : 0;
+
+            // target view
+            this.targetView.render();
+
+            this.targetView.$el.velocity('transition.slideRightIn', {
+                delay: delay,
+                duration: SlideHorizontalTransition.duration,
+                complete: function complete() {
+                    _this.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
         }
     }, {
-        key: "animatePop",
-        value: function animatePop(callback) {
-            this.currentView.didDisappear();
-            this.targetView.didAppear();
-            if (callback) {
-                callback();
+        key: 'pop',
+        value: function pop(callback) {
+            var _this2 = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, function () {
+                    _this2.currentView.didDisappear();
+                });
             }
+
+            var delay = this.currentView ? SlideHorizontalTransition.duration / 2 : 0;
+
+            // target view
+            this.targetView.$el.velocity('transition.slideLeftIn', {
+                delay: delay,
+                duration: SlideHorizontalTransition.duration,
+                complete: function complete() {
+                    _this2.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
         }
     }]);
 
-    return SlideTransition;
+    return SlideHorizontalTransition;
 }();
 
-exports.default = SlideTransition;
+SlideHorizontalTransition.type = 'slide-h';
+SlideHorizontalTransition.duration = 320;
+exports.default = SlideHorizontalTransition;
+
+},{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/plugins/transition/SlideVerticalTransition.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/***
+ * SlideVerticalTransition
+ */
+var SlideVerticalTransition = function () {
+    function SlideVerticalTransition(currentView, targetView) {
+        _classCallCheck(this, SlideVerticalTransition);
+
+        this.currentView = currentView;
+        this.targetView = targetView;
+    }
+
+    _createClass(SlideVerticalTransition, [{
+        key: 'push',
+        value: function push(callback) {
+            var _this = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', SlideVerticalTransition.duration, function () {
+                    _this.currentView.didDisappear();
+                });
+            }
+
+            var delay = this.currentView ? SlideVerticalTransition.duration / 2 : 0;
+
+            // target view
+            this.targetView.render();
+
+            this.targetView.$el.velocity('transition.slideUpIn', {
+                delay: delay,
+                duration: SlideVerticalTransition.duration,
+                complete: function complete() {
+                    _this.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
+        }
+    }, {
+        key: 'pop',
+        value: function pop(callback) {
+            var _this2 = this;
+
+            // current view
+            if (this.currentView) {
+                this.currentView.$el.velocity('fadeOut', SlideVerticalTransition.duration, function () {
+                    _this2.currentView.didDisappear();
+                });
+            }
+
+            var delay = this.currentView ? SlideVerticalTransition.duration / 2 : 0;
+
+            // target view
+            this.targetView.$el.velocity('transition.slideDownIn', {
+                delay: delay,
+                duration: SlideVerticalTransition.duration,
+                complete: function complete() {
+                    _this2.targetView.didAppear();
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
+        }
+    }]);
+
+    return SlideVerticalTransition;
+}();
+
+SlideVerticalTransition.type = 'slide-v';
+SlideVerticalTransition.duration = 320;
+exports.default = SlideVerticalTransition;
 
 },{}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/router.js":[function(require,module,exports){
 'use strict';
@@ -689,9 +861,9 @@ var _viewport = require('./viewport');
 
 var _viewport2 = _interopRequireDefault(_viewport);
 
-var _transition = require('./commons/transition');
+var _trmanager = require('./commons/trmanager');
 
-var _transition2 = _interopRequireDefault(_transition);
+var _trmanager2 = _interopRequireDefault(_trmanager);
 
 var _HomeView = require('./views/HomeView');
 
@@ -727,7 +899,7 @@ var router = {
                 if (trigger === undefined) {
                     trigger = true;
                 }
-                this.params = { __animation__: animation || _transition2.default.defaultAnimation };
+                this.params = { __animation__: animation || _trmanager2.default.defaultAnimation };
                 Object.assign(this.params, params || {});
 
                 this.navigate(path, { trigger: trigger });
@@ -747,8 +919,10 @@ var router = {
         });
 
         this.appRouter = new AppRouter();
-        // Backbone.history.start();
+        // HTML5 push state
         Backbone.history.start({ pushState: true, root: '/' });
+
+        // Backbone.history.start();
     },
 
     /**
@@ -756,7 +930,7 @@ var router = {
      */
     fly: function fly(view, params) {
         // merge params
-        var mParams = this.appRouter.params || { __animation__: _transition2.default.defaultAnimation };
+        var mParams = this.appRouter.params || { __animation__: _trmanager2.default.defaultAnimation };
         Object.assign(mParams, params || {});
         _viewport2.default.fly(view, mParams);
         this.appRouter.params = null;
@@ -765,7 +939,7 @@ var router = {
 
 exports.default = router;
 
-},{"./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js","./viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js","./views/DetailView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js","./views/EndView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/EndView.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js":[function(require,module,exports){
+},{"./commons/trmanager":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/trmanager.js","./viewport":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/viewport.js","./views/DetailView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js","./views/EndView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/EndView.js","./views/HomeView":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/HomeView.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/utils/http.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -853,9 +1027,9 @@ var _consts = require('./commons/consts');
 
 var _consts2 = _interopRequireDefault(_consts);
 
-var _transition = require('./commons/transition');
+var _trmanager = require('./commons/trmanager');
 
-var _transition2 = _interopRequireDefault(_transition);
+var _trmanager2 = _interopRequireDefault(_trmanager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -871,7 +1045,7 @@ var viewport = {
   * view transition
      */
 	fly: function fly(defination, args) {
-		$('.modal').remove();
+		// $('.modal').remove();
 
 		var len = cache.length;
 		var currentCacheItem = cache[len - 1];
@@ -900,11 +1074,19 @@ var viewport = {
 			}
 		}
 
-		var trfactory = _transition2.default.get(currentView, targetView, args.__animation__);
-		trfactory[direction](function () {
+		var animation = void 0;
+		if (direction === 'push') {
+			animation = args.__animation__;
+		} else {
+			animation = currentView.__animation__;
+		}
+		var transition = _trmanager2.default.get(currentView, targetView, animation);
+
+		transition[direction](function () {
 			if (direction === 'push') {
 				// push
 				targetView.__cid__ = 'view' + getCid();
+				targetView.__animation__ = args.__animation__;
 				cache.push({ key: defination, value: targetView });
 			}
 
@@ -939,7 +1121,7 @@ var viewport = {
 
 exports.default = viewport;
 
-},{"./commons/consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js","./commons/transition":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/transition.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js":[function(require,module,exports){
+},{"./commons/consts":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/consts.js","./commons/trmanager":"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/commons/trmanager.js"}],"/Users/fedor/works/private/github/single-page-application-boilerplate-backbone/public/scripts/views/DetailView.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -995,7 +1177,7 @@ var DetailView = _Component2.default.extend({
         history.go(-1);
     },
     onNext: function onNext() {
-        APP.router.nav('end', { datetime: Date.now() });
+        APP.router.nav('end', { datetime: Date.now() }, 'slide-v');
     }
 });
 
@@ -1157,7 +1339,13 @@ var ItemView = Backbone.View.extend({
         // append to html
         this.$el.addClass('item');
         this.$el.html((0, _item2.default)(this.data));
+
+        this.$el.on('click', this.onClick.bind(this));
+
         return this;
+    },
+    onClick: function onClick() {
+        APP.router.nav('detail/' + this.data.id);
     }
 });
 
@@ -1202,13 +1390,11 @@ return __p;
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<a href="#detail/'+
-((__t=( id ))==null?'':__t)+
-'">\n    <div class="title p4">'+
+__p+='<div class="title p4">'+
 ((__t=( title ))==null?'':__t)+
-'</div>\n    <div class="desc">'+
+'</div>\n<div class="desc">'+
 ((__t=( desc ))==null?'':__t)+
-'</div>\n</a>';
+'</div>';
 }
 return __p;
 };

@@ -1,12 +1,12 @@
 /***
- * FadeTransition
+ * SlideHorizontalTransition
  */
-class FadeTransition {
+class SlideHorizontalTransition {
 
-    static type = 'fade';
+    static type = 'slide-h';
 
     static duration = 320;
-
+    
     constructor(currentView, targetView) {
         this.currentView = currentView;
         this.targetView = targetView;
@@ -15,16 +15,19 @@ class FadeTransition {
     push(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', FadeTransition.duration, () => {
+            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, () => {
                 this.currentView.didDisappear();
             });
         }
 
+        const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
+
         // target view
         this.targetView.render();
-        this.targetView.$el.velocity('fadeIn', {
-            delay: FadeTransition.duration/2,
-            duration: FadeTransition.duration,
+
+        this.targetView.$el.velocity('transition.slideRightIn', {
+            delay: delay,
+            duration: SlideHorizontalTransition.duration,
             complete: () => {
                 this.targetView.didAppear();
                 if(callback) {
@@ -37,15 +40,17 @@ class FadeTransition {
     pop(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', FadeTransition.duration, () => {
+            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, () => {
                 this.currentView.didDisappear();
             });
         }
 
+        const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
+
         // target view
-        this.targetView.$el.velocity('fadeIn', {
-            delay: FadeTransition.duration/2,
-            duration: FadeTransition.duration,
+        this.targetView.$el.velocity('transition.slideLeftIn', {
+            delay: delay,
+            duration: SlideHorizontalTransition.duration,
             complete: () => {
                 this.targetView.didAppear();
                 if(callback) {
@@ -56,4 +61,4 @@ class FadeTransition {
     }
 }
 
-export default FadeTransition;
+export default SlideHorizontalTransition;

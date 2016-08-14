@@ -3,6 +3,8 @@
  */
 class NoneTransition {
 
+    static type = 'none';
+
     constructor(currentView, targetView) {
         this.currentView = currentView;
         this.targetView = targetView;

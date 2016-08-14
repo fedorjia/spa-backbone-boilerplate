@@ -38,7 +38,7 @@ const DetailView = Component.extend({
     },
 
     onNext() {
-        APP.router.nav('end', { datetime: Date.now() });
+        APP.router.nav('end', { datetime: Date.now() }, 'slide-v');
     }
 });
 

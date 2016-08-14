@@ -1,5 +1,5 @@
 import consts from './commons/consts';
-import transition from './commons/transition';
+import trmanager from './commons/trmanager';
 
 const cache = [];
 let cid = 0;
@@ -13,7 +13,7 @@ const viewport = {
 	 * view transition
      */
 	fly: function(defination, args) {
-		$('.modal').remove();
+		// $('.modal').remove();
 
 		let len = cache.length;
 		const currentCacheItem = cache[len-1];
@@ -42,10 +42,18 @@ const viewport = {
 			}
 		}
 
-		const trfactory = transition.get(currentView, targetView, args.__animation__);
-		trfactory[direction](() => {
+		let animation;
+		if(direction === 'push') {
+			animation = args.__animation__;
+		} else {
+			animation = currentView.__animation__;
+		}
+		const transition = trmanager.get(currentView, targetView, animation);
+
+		transition[direction](() => {
 			if(direction === 'push') { // push
 				targetView.__cid__ = `view${getCid()}`;
+				targetView.__animation__ = args.__animation__;
 				cache.push({ key: defination, value: targetView });
 			}
 
