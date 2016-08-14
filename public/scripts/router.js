@@ -11,26 +11,19 @@ const router = {
      */
 	start: function() {
         const AppRouter = Backbone.Router.extend({
+
+            /*********************************************
+             * router defination
+             * ********************************************/
             routes: {
                 '':                 'toHome',
                 'detail/:id':       'toDetail',
                 'end':              'toEnd'
             },
 
-            /**
-             * navigate
-             */
-            nav(path, params, animation, trigger) {
-                if (trigger === undefined) {
-                    trigger = true;
-                }
-                this.params = { __animation__ : animation || trmanager.defaultAnimation };
-                Object.assign(this.params, params || {});
-
-                this.navigate(path, {trigger: trigger});
-            },
-
-            /*************** router handlers **************/
+            /*********************************************
+             * router handlers
+             * ********************************************/
             toHome() {
                 router.fly(HomeView);
             },
@@ -39,13 +32,24 @@ const router = {
             },
             toEnd() {
                 router.fly(EndView);
+            },
+
+
+            /**navigate**/
+            nav(path, params, animation, trigger) {
+                if (trigger === undefined) {
+                    trigger = true;
+                }
+                this.params = { __animation__ : animation || trmanager.defaultAnimation };
+                Object.assign(this.params, params || {});
+
+                this.navigate(path, {trigger: trigger});
             }
         });
 
         this.appRouter = new AppRouter();
         // HTML5 push state
         Backbone.history.start({pushState:true, root: '/'});
-
         // Backbone.history.start();
     },
 
