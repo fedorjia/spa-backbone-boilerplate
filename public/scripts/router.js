@@ -22,7 +22,7 @@ const router = {
             },
 
             /*********************************************
-             * router handlers
+             * router handler
              * ********************************************/
             toHome() {
                 router.fly(HomeView);
