@@ -1,11 +1,14 @@
 > Single Page Applicatoin with Backbone
 
+![demo](public/images/demo.gif)
+
 # install
 
 1. `npm install`
 2. `node index.js`
 3. `gulp dev`
 4. visit [http://localhost:3000](http://localhost:3000)
+
 
 # description
 
