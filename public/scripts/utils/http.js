@@ -1,64 +1,86 @@
 import 'whatwg-fetch';
 
-const http = {
-	/**
-	 * get
-     */
-	get(url, params = {}) {
-		let i = 0;
-		let str = '';
-		for(var prop in params) {
-			if(params.hasOwnProperty(prop)) {
-				str = (i === 0) ? (str+`?${prop}=${params[prop]}`) : (str+`&${prop}=${params[prop]}`);
-			}
-			i++;
-		}
+function __createURL(url) {
+	let hasQ = url.indexOf('?') !== -1;
+	url += (hasQ ? '&' : '?') + '_auth=x';
+	return url;
+}
 
-		return fetch(url + str, {
-			method: 'GET'
-		})
-		.then(
-			(response) => response.json()
-			.then((json) => ({ json, response }))
-		)
-		.then(({ json, response }) => {
-			if (!response.ok) {
-				return Promise.reject(json);
-			}
-			return json;
-		})
-		.catch(function(ex) {
-			return Promise.reject(ex);
-		});
-	},
-	
-	// post
-	post: (url, params) => {
-		const formData = new FormData();
-		for(const prop in params) {
-			if(params.hasOwnProperty(prop)) {
-				formData.append(prop, params[prop]);
+/**
+ * fetch
+ */
+function __fetch(url, options) {
+	return fetch(url, options)
+			.then((response) => {
+				return response.json();
+			}).then((json) => {
+				if(json.success) {
+					return { data: json.result, __timestamp__: Date.now() };
+				} else {
+					return Promise.reject(new Error(json.result));
+				}
+			}).catch((ex) => {
+				return Promise.reject({ message: ex.message, __timestamp__: Date.now() });
+			});
+}
+
+/**
+ * request
+ */
+function __request(method, url, params) {
+	url = __createURL(url);
+	if(method === 'GET' || method === 'DELETE') {
+		for (const prop in params) {
+			if (params.hasOwnProperty(prop)) {
+				url += `&${prop}=${params[prop]}`;
 			}
 		}
+		return __fetch(url, { method: method });
+	} else {
+		// x-www-form-urlencoded
+		const body = Object.keys(params).map((key) => {
+			return key + '=' + encodeURIComponent(params[key]);
+		}).join('&');
 
-		return fetch(url, {
-			method: 'POST',
-			body: formData
-		})
-		.then(
-			(response) => response.json()
-			.then((json) => ({ json, response }))
-		)
-		.then(({ json, response }) => {
-			if (!response.ok) {
-				return Promise.reject(json);
-			}
-			return json;
-		})
-		.catch(function(ex) {
-			return Promise.reject(ex);
+		return __fetch(url, {
+			method: method,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: body
 		});
 	}
-};
+}
 
-export default http;
+/*********************************************
+ * HTTP Client
+ *********************************************/
+export default {
+	/**
+	 * GET
+	 */
+	get(url, params = {}) {
+		return __request('GET', url, params);
+	},
+
+	/**
+	 * DELETE
+	 */
+	delete(url, params = {}) {
+		return __request('DELETE', url, params);
+	},
+
+	/**
+	 * POST
+	 */
+	post(url, params = {}) {
+		return __request('POST', url, params);
+	},
+
+	/**
+	 * PUT
+	 */
+	put(url, params = {}, files) {
+		return __request('PUT', url, params, files);
+	}
+};

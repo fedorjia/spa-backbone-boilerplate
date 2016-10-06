@@ -1,11 +1,7 @@
 /***
  * Generic Modal
  */
-const Modal = Backbone.View.extend({
-  
-  initialize() {
-
-  },
+class Modal extends Backbone.View {
 
   render() {
       this.$el.addClass('modal');
@@ -22,28 +18,28 @@ const Modal = Backbone.View.extend({
         }.bind(this)
       });
       return this;
-  },
+  }
 
-  remove: function() {
+  remove() {
       this.$el.remove();
-  },
+  }
 
   dismiss() {
-      $('.modal-mask').velocity("fadeOut", 400);
+      $('.modal-mask').velocity('fadeOut', 400);
       this.didDisappear();
-  },
+  }
 
   /***** life cycle  ****/
 
   didDisappear() {
-     this.$el.velocity("fadeOut", 400, function() {
+     this.$el.velocity('fadeOut', 400, function() {
         this.remove();
      }.bind(this));
-  },
+  }
 
   didAppear() {
-	   this.$el.velocity("fadeIn");
+      this.$el.velocity('fadeIn');
   }
-});
+}
 
-module.exports = Modal;
+export default Modal;

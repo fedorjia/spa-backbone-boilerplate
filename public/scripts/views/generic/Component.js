@@ -1,31 +1,27 @@
 /***
  * Generic Component
  */
-const Component = Backbone.View.extend({
-  
-  initialize() {
+class Component extends Backbone.View {
 
-  },
+	/***** lifecycle ****/
 
-  render() {
-      this.$el.addClass('page');
-      $('body').append(this.$el);
-      return this;
-  },
+	render() {
+		this.$el.addClass('page');
+		$('body').append(this.$el);
+		return this;
+	}
 
-  remove() {
-      this.$el.remove();
-  },
+	viewWillDisappear() {
+		
+	}
 
-  /***** life cycle  ****/
+	viewDidAppear() {
 
-  didDisappear() {
+	}
 
-  },
+	remove() {
+		this.$el.remove();
+	}
+}
 
-  didAppear() {
-     
-  }
-});
-
-module.exports = Component;
+export default Component;

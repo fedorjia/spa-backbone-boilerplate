@@ -95,8 +95,8 @@ ul li {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
   display: none;
+  background-color: #fff;
 }
 h1,
 h2,
@@ -230,6 +230,7 @@ h6 {
   line-height: 168%;
 }
 .detail-view .btn-back,
+.detail-view .btn-replace,
 .detail-view .btn-next {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -237,7 +238,7 @@ h6 {
   border: 1px solid #292929;
   padding: 8px 12px;
   text-align: center;
-  width: 45%;
+  width: 28%;
   margin-left: 3%;
   display: inline-block;
 }
@@ -254,7 +255,8 @@ h6 {
   margin: 36px 12px;
   text-align: center;
 }
-.end-view .btn-back {
+.end-view .btn-back,
+.end-view .btn-home {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -262,5 +264,6 @@ h6 {
   padding: 8px 12px;
   text-align: center;
   width: 45%;
-  margin: 1% auto;
+  margin-left: 3%;
+  display: inline-block;
 }

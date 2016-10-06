@@ -3,43 +3,57 @@ import template from '../../tpls/detail.html';
 import http from '../utils/http';
 // import EndView from './EndView';
 
-const DetailView = Component.extend({
-    className: 'detail-view',
-    events: {
-        'click .btn-back' : 'onBack',
-        'click .btn-next' : 'onNext'
-    },
+class DetailView extends Component {
 
-    initialize() {
-        this.constructor.__super__.initialize.apply(this);
-    },
+    constructor() {
+        super({
+            className:  'detail-view',
+            events: {
+                'click .btn-back' : 'onBack',
+                'click .btn-replace' : 'onReplace',
+                'click .btn-next' : 'onNext'
+            }
+        });
+    }
+
+    viewWillDisappear() {
+        console.log('DetailView viewWillDisappear');
+    }
+
+    viewDidAppear() {
+        console.log('DetailView viewDidAppear');
+    }
 
     render() {
-        this.constructor.__super__.render.apply(this);
+        super.render();
         this.loadData();
         return this;
-    },
+    }
 
     loadData() {
         http.get('/assets/detail.json')
             .then((result) => {
-                this.setup(result);
+                this.setup(result.data);
             });
-    },
+    }
 
     setup(data) {
         this.$el.html(template(data));
-    },
+    }
 
     /**************************** events ***************************/
     onBack() {
         // APP.router.nav('');
         history.go(-1);
-    },
+    }
+
+    onReplace() {
+        APP.router.nav('detail/xxx-replace');
+    }
 
     onNext() {
         APP.router.nav('end', { datetime: Date.now() }, 'slide-v');
     }
-});
+}
 
 export default DetailView;

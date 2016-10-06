@@ -15,9 +15,7 @@ class FadeTransition {
     push(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', FadeTransition.duration, () => {
-                this.currentView.didDisappear();
-            });
+            this.currentView.$el.velocity('fadeOut', FadeTransition.duration);
         }
 
         // target view
@@ -26,7 +24,6 @@ class FadeTransition {
             delay: FadeTransition.duration/2,
             duration: FadeTransition.duration,
             complete: () => {
-                this.targetView.didAppear();
                 if(callback) {
                     callback();
                 }
@@ -37,9 +34,7 @@ class FadeTransition {
     pop(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', FadeTransition.duration, () => {
-                this.currentView.didDisappear();
-            });
+            this.currentView.$el.velocity('fadeOut', FadeTransition.duration);
         }
 
         // target view
@@ -47,7 +42,6 @@ class FadeTransition {
             delay: FadeTransition.duration/2,
             duration: FadeTransition.duration,
             complete: () => {
-                this.targetView.didAppear();
                 if(callback) {
                     callback();
                 }

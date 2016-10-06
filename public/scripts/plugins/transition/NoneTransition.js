@@ -13,11 +13,9 @@ class NoneTransition {
     push(callback) {
         if(this.currentView) {
             this.currentView.$el.css({ display: 'none', opacity: 0 });
-            this.currentView.didDisappear();
         }
         this.targetView.render();
         this.targetView.$el.css({ display: 'block', opacity: 1 });
-        this.targetView.didAppear();
         if(callback) {
             callback();
         }
@@ -25,10 +23,7 @@ class NoneTransition {
 
     pop(callback) {
         this.currentView.$el.css({ display: 'none', opacity: 0 });
-        this.currentView.didDisappear();
-
         this.targetView.$el.css({ display: 'block', opacity: 1 });
-        this.targetView.didAppear();
         if(callback) {
             callback();
         }

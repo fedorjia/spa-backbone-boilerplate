@@ -15,9 +15,7 @@ class SlideHorizontalTransition {
     push(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, () => {
-                this.currentView.didDisappear();
-            });
+            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
         }
 
         const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
@@ -29,7 +27,6 @@ class SlideHorizontalTransition {
             delay: delay,
             duration: SlideHorizontalTransition.duration,
             complete: () => {
-                this.targetView.didAppear();
                 if(callback) {
                     callback();
                 }
@@ -40,9 +37,7 @@ class SlideHorizontalTransition {
     pop(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration, () => {
-                this.currentView.didDisappear();
-            });
+            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
         }
 
         const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
@@ -52,7 +47,6 @@ class SlideHorizontalTransition {
             delay: delay,
             duration: SlideHorizontalTransition.duration,
             complete: () => {
-                this.targetView.didAppear();
                 if(callback) {
                     callback();
                 }

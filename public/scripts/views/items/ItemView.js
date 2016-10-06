@@ -1,14 +1,15 @@
 import template from '../../../tpls/items/item.html';
 
-const ItemView = Backbone.View.extend({
-    events: {
+class ItemView extends Backbone.View {
+    constructor(data) {
+        super({
+            tagName:  'li',
+            events: {
 
-    },
-    tagName: 'li',
-
-    initialize(data) {
+            }
+        });
         this.data = data;
-    },
+    }
 
     render() {
         // append to html
@@ -18,11 +19,11 @@ const ItemView = Backbone.View.extend({
         this.$el.on('click', this.onClick.bind(this));
 
         return this;
-    },
+    }
 
     onClick() {
         APP.router.nav(`detail/${this.data.id}`);
     }
-});
+}
 
 export default ItemView;

@@ -4,10 +4,10 @@ import SlideHorizontalTransition from '../plugins/transition/SlideHorizontalTran
 import SlideVerticalTransition from '../plugins/transition/SlideVerticalTransition';
 
 /***
- * transition manager
+ * transition
  */
-const trmanager = {
-
+const transition = {
+	
 	defaultAnimation: 'fade', // none, fade, slide-h, slide-v
 
 	get(currentView, targetView, animation) {
@@ -19,20 +19,20 @@ const trmanager = {
 		}
 
 		switch (animationType) {
-			case 'none': {
-				result = new NoneTransition(currentView, targetView, animation);
-				break;
-			}
 			case 'fade': {
-				result = new FadeTransition(currentView, targetView, animation);
+				result = new FadeTransition(currentView, targetView);
 				break;
 			}
 			case 'slide-h': {
-				result = new SlideHorizontalTransition(currentView, targetView, animation);
+				result = new SlideHorizontalTransition(currentView, targetView);
 				break;
 			}
 			case 'slide-v': {
-				result = new SlideVerticalTransition(currentView, targetView, animation);
+				result = new SlideVerticalTransition(currentView, targetView);
+				break;
+			}
+			default: {
+				result = new NoneTransition(currentView, targetView);
 				break;
 			}
 		}
@@ -40,4 +40,4 @@ const trmanager = {
 	}
 };
 
-export default trmanager;
+export default transition;

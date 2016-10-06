@@ -13,13 +13,6 @@ class SlideVerticalTransition {
     }
 
     push(callback) {
-        // current view
-        if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideVerticalTransition.duration, () => {
-                this.currentView.didDisappear();
-            });
-        }
-
         const delay = this.currentView ? SlideVerticalTransition.duration/2 : 0;
         
         // target view
@@ -29,7 +22,10 @@ class SlideVerticalTransition {
             delay: delay,
             duration: SlideVerticalTransition.duration,
             complete: () => {
-                this.targetView.didAppear();
+                // current view
+                if(this.currentView) {
+                    this.currentView.$el.css({ opacity: 0, display: 'none' });
+                }
                 if(callback) {
                     callback();
                 }
@@ -38,26 +34,21 @@ class SlideVerticalTransition {
     }
 
     pop(callback) {
+        const delay = this.currentView ? SlideVerticalTransition.duration/2 : 0;
+        this.targetView.$el.css({ opacity: 1, display: 'block' });
+
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideVerticalTransition.duration, () => {
-                this.currentView.didDisappear();
+            this.currentView.$el.velocity('transition.slideDownOut', {
+                delay: delay,
+                duration: SlideVerticalTransition.duration,
+                complete: () => {
+                    if(callback) {
+                        callback();
+                    }
+                }
             });
         }
-
-        const delay = this.currentView ? SlideVerticalTransition.duration/2 : 0;
-
-        // target view
-        this.targetView.$el.velocity('transition.slideDownIn', {
-            delay: delay,
-            duration: SlideVerticalTransition.duration,
-            complete: () => {
-                this.targetView.didAppear();
-                if(callback) {
-                    callback();
-                }
-            }
-        });
     }
 }
 
