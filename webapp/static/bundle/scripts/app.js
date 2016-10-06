@@ -7953,17 +7953,17 @@ var _transition = require('./commons/transition');
 
 var _transition2 = _interopRequireDefault(_transition);
 
-var _HomeView = require('./views/HomeView');
+var _Home = require('./views/Home');
 
-var _HomeView2 = _interopRequireDefault(_HomeView);
+var _Home2 = _interopRequireDefault(_Home);
 
-var _DetailView = require('./views/DetailView');
+var _Detail = require('./views/Detail');
 
-var _DetailView2 = _interopRequireDefault(_DetailView);
+var _Detail2 = _interopRequireDefault(_Detail);
 
-var _EndView = require('./views/EndView');
+var _End = require('./views/End');
 
-var _EndView2 = _interopRequireDefault(_EndView);
+var _End2 = _interopRequireDefault(_End);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7988,13 +7988,13 @@ var router = {
              * router handler
              * ********************************************/
             toHome: function toHome() {
-                router.fly(_HomeView2.default);
+                router.fly(_Home2.default);
             },
             toDetail: function toDetail(id) {
-                router.fly(_DetailView2.default, { id: id });
+                router.fly(_Detail2.default, { id: id });
             },
             toEnd: function toEnd() {
-                router.fly(_EndView2.default);
+                router.fly(_End2.default);
             },
 
 
@@ -8030,7 +8030,7 @@ var router = {
 
 exports.default = router;
 
-},{"./commons/transition":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/commons/transition.js","./manager":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/manager.js","./views/DetailView":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/DetailView.js","./views/EndView":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/EndView.js","./views/HomeView":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/HomeView.js"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js":[function(require,module,exports){
+},{"./commons/transition":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/commons/transition.js","./manager":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/manager.js","./views/Detail":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/Detail.js","./views/End":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/End.js","./views/Home":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/Home.js"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8135,7 +8135,7 @@ exports.default = {
 	}
 };
 
-},{"whatwg-fetch":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/node_modules/whatwg-fetch/fetch.js"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/DetailView.js":[function(require,module,exports){
+},{"whatwg-fetch":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/node_modules/whatwg-fetch/fetch.js"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/Detail.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8241,7 +8241,7 @@ var DetailView = function (_Component) {
 
 exports.default = DetailView;
 
-},{"../utils/http":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./tpls/detail.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/detail.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/EndView.js":[function(require,module,exports){
+},{"../utils/http":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./tpls/detail.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/detail.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/End.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8315,7 +8315,7 @@ var EndView = function (_Component) {
 
 exports.default = EndView;
 
-},{"./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./tpls/end.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/end.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/HomeView.js":[function(require,module,exports){
+},{"./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./tpls/end.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/end.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/Home.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8338,9 +8338,9 @@ var _http = require('../utils/http');
 
 var _http2 = _interopRequireDefault(_http);
 
-var _ItemView = require('./items/ItemView');
+var _Item = require('./items/Item');
 
-var _ItemView2 = _interopRequireDefault(_ItemView);
+var _Item2 = _interopRequireDefault(_Item);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8365,13 +8365,12 @@ var HomeView = function (_Component) {
         return _this;
     }
 
+    //    initialize() {
+    //        super.initialize();
+    //        this.constructor.__super__.initialize.apply(this);
+    //    }
+
     _createClass(HomeView, [{
-        key: 'initialize',
-        value: function initialize() {
-            _get(HomeView.prototype.__proto__ || Object.getPrototypeOf(HomeView.prototype), 'initialize', this).call(this);
-            //        this.constructor.__super__.initialize.apply(this);
-        }
-    }, {
         key: 'render',
         value: function render() {
             _get(HomeView.prototype.__proto__ || Object.getPrototypeOf(HomeView.prototype), 'render', this).call(this);
@@ -8395,7 +8394,7 @@ var HomeView = function (_Component) {
         value: function setup(data) {
             var $items = this.$el.find('.items');
             data.forEach(function (obj) {
-                var item = new _ItemView2.default(obj);
+                var item = new _Item2.default(obj);
                 $items.append(item.render().el);
             });
         }
@@ -8406,7 +8405,7 @@ var HomeView = function (_Component) {
 
 exports.default = HomeView;
 
-},{"../utils/http":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./items/ItemView":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/items/ItemView.js","./tpls/home.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/home.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js":[function(require,module,exports){
+},{"../utils/http":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/utils/http.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js","./items/Item":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/items/Item.js","./tpls/home.html":"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/tpls/home.html"}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/generic/Component.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8462,7 +8461,7 @@ var Component = function (_Backbone$View) {
 
 exports.default = Component;
 
-},{}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/items/ItemView.js":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/backbone-spa-mobileapp-boilerplate/webapp/src/views/items/Item.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,6 +1,6 @@
 const settings = {
     appname: 'single-page-application-boilerplate-backbone',
-    debug: false,
+    debug: true,
     port: 3000
 };
 

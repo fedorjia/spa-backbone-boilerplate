@@ -1,7 +1,7 @@
 import Component from './generic/Component';
 import template from './tpls/home.html';
 import http from '../utils/http';
-import ItemView from './items/ItemView';
+import Item from './items/Item';
 
 class HomeView extends Component {
 
@@ -15,10 +15,10 @@ class HomeView extends Component {
         this.name = 'Single Page Applcation With Backbone';
     }
 
-    initialize() {
-        super.initialize();
+//    initialize() {
+//        super.initialize();
 //        this.constructor.__super__.initialize.apply(this);
-    }
+//    }
 
     render() {
         super.render();
@@ -39,7 +39,7 @@ class HomeView extends Component {
     setup(data) {
         const $items = this.$el.find('.items');
         data.forEach((obj) => {
-            const item = new ItemView(obj);
+            const item = new Item(obj);
             $items.append(item.render().el);
         });
     }

@@ -19,15 +19,21 @@
 # document
 
 1. develop your app	
-	> gulp dev
+
+	* modify settings.js,   `debug = true`
+	
+	* `gulp dev`
 
 2. product your app	
-	> gulp build
+
+	* modify settings.js,   `debug = false`
+	
+	* `gulp prod`
 	
 	
 # thanks
 
 1. `Browserify` & `ES6` for module files
-2. `Backbone` for making components reuseable.
+2. `Backbone` for making components reuseable
 3. `Gulp` for building project
 4. `Stylus` for precompile css.

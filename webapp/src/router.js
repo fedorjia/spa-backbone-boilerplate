@@ -1,8 +1,8 @@
 import manager from './manager';
 import transition from './commons/transition';
-import HomeView from './views/HomeView';
-import DetailView from './views/DetailView';
-import EndView from './views/EndView';
+import Home from './views/Home';
+import Detail from './views/Detail';
+import End from './views/End';
 
 const router = {
 
@@ -25,13 +25,13 @@ const router = {
              * router handler
              * ********************************************/
             toHome() {
-                router.fly(HomeView);
+                router.fly(Home);
             },
             toDetail(id) {
-                router.fly(DetailView, { id: id });
+                router.fly(Detail, { id: id });
             },
             toEnd() {
-                router.fly(EndView);
+                router.fly(End);
             },
 
 
