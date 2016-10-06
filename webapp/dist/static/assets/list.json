@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "result": [{
+    "id": 1,
+    "title": "This Olympian Wept as She Realized She'd Won Her Country's First-Ever Gold Medal",
+    "desc": "Though this was Majlinda Kelmendi’s second Olympics, it was a historical first for both her and Kosovo, the country she was representing: Kelmendi’s 52kg judo victory against Italy’s Odette Giufredda earned her Kosovo’s first-ever gold medal, CNN reports."
+  }, {
+    "id": 2,
+    "title": "Here's what happens to JC Penney when Sears, Macy's close stores",
+    "desc": "On a call with analysts following the company's fiscal second-quarter earnings report , CEO Marvin Ellison said the department store's sales have seen a lift in malls where a Sears (NASDAQ: SHLD) has closed. As of April 30, Sears said it had closed 75 stores over past two years."
+  }, {
+    "id": 3,
+    "title": "Reality star Trump seems to be facing reality",
+    "desc": "Barring something crazy happening, Donald Trump is going to lose in November — probably quite badly — and it appears Trump may be starting to realize this."
+  }, {
+    "id": 4,
+    "title": "If you eat bananas for breakfast, we have some bummer news",
+    "desc": "“Bananas eaten alone aren’t the best option because they’re 25% sugar and moderately acidic,” Gioffre said, noting that adding something with a healthy fat might make them a little bit healthier."
+  }]
+}

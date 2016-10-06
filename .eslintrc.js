@@ -27,7 +27,9 @@ module.exports = {
         "$": true,
         "APP": true,
         "process": true,
-        "wx": true,
+        "rm": true,
+        "mkdir": true,
+        "cp": true,
         "_": true,
         "Backbone": true,
         "__dirname": true
