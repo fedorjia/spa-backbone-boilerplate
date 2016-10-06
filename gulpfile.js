@@ -6,13 +6,12 @@ const notifier = require('node-notifier');
 const devTask = require('./webapp/build/dev').task;
 const buildTask = require('./webapp/build/prod').task;
 
-/*************************** developement ************************/
-
+/** developement **/
 gulp.task('dev', [devTask], () => {
     notifier.notify({ message: 'Development is ready' });
 });
 
-/*************************** production ***************************/
+/** production **/
 gulp.task('prod', [buildTask], function() {
     notifier.notify({ message: 'Productoin completed' });
 });

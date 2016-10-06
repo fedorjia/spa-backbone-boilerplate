@@ -1,7 +1,7 @@
 {
-  "name": "single-page-application-boilerplate-backbone",
+  "name": "backbone-spa-mobile-boilerplate",
   "version": "1.0.0",
-  "description": "single page application boilerplate backbone",
+  "description": "single page mobile application boilerplate with backbone",
   "main": "index.js",
   "scripts": {},
   "repository": {
