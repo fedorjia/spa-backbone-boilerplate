@@ -1,4 +1,4 @@
-> Single Page Web Applicatoin with Backbone
+> Single Page Mobile Applicatoin with Backbone
 
 # install
 
