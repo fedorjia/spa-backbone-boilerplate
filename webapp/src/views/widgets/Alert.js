@@ -1,7 +1,5 @@
 import Modal from '../generic/Modal';
 import template from '../tpls/widgets/alert.html';
-import { is } from '../../utils';
-
 
 export default {
     show(title, options) {
@@ -12,6 +10,9 @@ export default {
     }
 };
 
+/**
+ * AlertModal
+ */
 class AlertModal extends Modal {
     static defaults = {
         dismissOnBlur: false,

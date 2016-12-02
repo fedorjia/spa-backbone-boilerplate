@@ -8844,74 +8844,7 @@ var routers = {
 
 exports.default = routers;
 
-},{"./libs/router":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js","./views/Cart":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Cart.js","./views/Home":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/utils/index.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.is = exports.getParameter = undefined;
-
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var getParameter = exports.getParameter = function getParameter(name) {
-	var url = location.href;
-	var start = url.indexOf('?') + 1;
-	if (start === 0) {
-		return '';
-	}
-	var value = '';
-	var queryString = url.substring(start);
-	var paraNames = queryString.split('&');
-	for (var i = 0; i < paraNames.length; i++) {
-		var str = paraNames[i];
-		start = str.indexOf('=');
-		var parameterName = str;
-		if (start !== -1) {
-			parameterName = str.substring(0, start);
-		}
-
-		if (name === parameterName) {
-			start = str.indexOf('=');
-			if (start !== -1) {
-				value = str.substring(start + 1);
-			}
-		}
-	}
-	return value;
-};
-
-var is = exports.is = {
-	email: function email(str) {
-		return (/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(str)
-		);
-	},
-	number: function number(str) {
-		return !isNaN(parseFloat(str)) && isFinite(str);
-	},
-	string: function string(str) {
-		return typeof str === 'string';
-	},
-	object: function object(str) {
-		return (typeof str === 'undefined' ? 'undefined' : (0, _typeof3.default)(str)) === 'object';
-	},
-	integer: function integer(str) {
-		return !isNaN(str) && str * 1 === parseInt(str, 10);
-	},
-	mobile: function mobile(str) {
-		return (/^1\d{10}$/.test(str)
-		);
-	},
-	empty: function empty(str) {
-		return str === null || str === undefined || str.length === 0;
-	}
-};
-
-},{"babel-runtime/helpers/typeof":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/typeof.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Cart.js":[function(require,module,exports){
+},{"./libs/router":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js","./views/Cart":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Cart.js","./views/Home":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Cart.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9884,8 +9817,6 @@ var _alert = require('../tpls/widgets/alert.html');
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _utils = require('../../utils');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -9937,7 +9868,7 @@ AlertModal.defaults = {
     onDone: null
 };
 
-},{"../../utils":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/utils/index.js","../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/alert.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/alert.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js":[function(require,module,exports){
+},{"../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/alert.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/alert.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9979,8 +9910,6 @@ var _Modal3 = _interopRequireDefault(_Modal2);
 var _confirm = require('../tpls/widgets/confirm.html');
 
 var _confirm2 = _interopRequireDefault(_confirm);
-
-var _utils = require('../../utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10044,7 +9973,7 @@ ComfirmModal.defaults = {
     onDone: null
 };
 
-},{"../../utils":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/utils/index.js","../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/confirm.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/confirm.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Infinite.js":[function(require,module,exports){
+},{"../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/confirm.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/confirm.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Infinite.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
