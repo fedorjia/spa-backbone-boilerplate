@@ -3,43 +3,62 @@
  */
 class Modal extends Backbone.View {
 
-  render() {
-      this.$el.addClass('modal');
-      $('body').append(this.$el);
+    static defaults = {
+        duration: 240,
+        dismissOnBlur: false
+    };
 
-      $('.modal-mask').velocity({
-        opacity: 0.8,
-        display: 'block'
-      }, {
-        display: 'block',
-        duration: 200,
-        complete: function() {
-          this.didAppear();
-        }.bind(this)
-      });
-      return this;
-  }
+    constructor(options) {
+        super(options);
+        this.options = Object.assign({}, Modal.defaults, options);
+        this.render();
+    }
 
-  remove() {
-      this.$el.remove();
-  }
+    didAppear() {
 
-  dismiss() {
-      $('.modal-mask').velocity('fadeOut', 400);
-      this.didDisappear();
-  }
+    }
 
-  /***** life cycle  ****/
+    willDisappear() {
 
-  didDisappear() {
-     this.$el.velocity('fadeOut', 400, function() {
-        this.remove();
-     }.bind(this));
-  }
+    }
 
-  didAppear() {
-      this.$el.velocity('fadeIn');
-  }
+    render() {
+        const $el = this.$el;
+        const $modal = $(document.createElement('div'));
+
+        $el.addClass('modal-overlay');
+        $modal.addClass('modal');
+        this.$el.append($modal);
+
+        if(this.options.dismissOnBlur) {
+            this.$el.on('click', this.dismiss.bind(this));
+        }
+
+        return this;
+    }
+
+    show($inner) {
+        const $body = $('body');
+        const $modal = this.$el.find('.modal');
+
+        this.$el.show();
+        $modal.html($inner);
+        $body.append(this.$el);
+
+        this.$el.velocity('transition.shrinkIn', this.options.duration, () => {
+            this.didAppear();
+        });
+    }
+
+    dismiss(event) {
+        if(event && !$(event.target).hasClass('modal')) {
+            return;
+        }
+        this.willDisappear();
+        this.$el.velocity('fadeOut', this.options.duration, () => {
+            this.$el.remove();
+        });
+    }
 }
 
 export default Modal;

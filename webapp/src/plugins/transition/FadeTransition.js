@@ -21,7 +21,7 @@ class FadeTransition {
         // target view
         this.targetView.render();
         this.targetView.$el.velocity('fadeIn', {
-            delay: FadeTransition.duration/2,
+            delay: FadeTransition.duration/4,
             duration: FadeTransition.duration,
             complete: () => {
                 if(callback) {
@@ -39,7 +39,7 @@ class FadeTransition {
 
         // target view
         this.targetView.$el.velocity('fadeIn', {
-            delay: FadeTransition.duration/2,
+            delay: FadeTransition.duration/4,
             duration: FadeTransition.duration,
             complete: () => {
                 if(callback) {

@@ -1,0 +1,51 @@
+.modal-overlay {
+	position absolute;
+	width 100%;
+	height 100%;
+	background: rgba(0,0,0,.5);
+    display: none;
+	top: 0;
+    left: 0;
+	opacity: 0;
+	z-index 1000;
+
+    .modal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        z-index : 1001;
+
+        .inner {
+            background-color: #fff;
+            width: 80%;
+            border-radius: 3px;
+            .title {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #333;
+                padding-top: 1.2rem;
+                text-align: center;
+        	}
+        	.content {
+                color: #999;
+                padding: 10px 20px 15px;
+                text-align: center;
+                border-bottom: 1px solid #eee;
+        	}
+
+            .buttons {
+                display: flex;
+                .button {
+                    flex: 1;
+                    padding: 0;
+                    margin-bottom: 0;
+                }
+                .button-cancel {
+                    border-right: 1px solid #eee;
+                }
+            }
+        }
+    }
+}

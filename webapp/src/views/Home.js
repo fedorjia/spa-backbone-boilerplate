@@ -1,47 +1,83 @@
 import Component from './generic/Component';
+import Infinite from './widgets/Infinite';
+import manager from '../libs/manager';
 import template from './tpls/home.html';
-import http from '../utils/http';
-import Item from './items/Item';
+import Handler from '../libs/handler';
+import ProductItem from './items/ProductItem';
+import CartOverlay from './components/CartOverlay';
 
 class HomeView extends Component {
-
+    // initialize() {
+    //     super.initialize();
+    //     this.constructor.__super__.initialize.apply(this);
+    // }
     constructor() {
         super({
-            className:  'home-view',
+            className: 'home-view',
             events: {
 
             }
         });
-        this.name = 'Single Page Applcation With Backbone';
+
+        // message handler
+        this.hander = new Handler(this.onMsgReceived.bind(this));
+
+        // infinite
+        this.infinite = new Infinite({
+            url: '/api/list',
+            limit: 10,
+            onDataReceived: this.setup.bind(this)
+        });
+
+        // cart overaly
+        this.cartOverlay = new CartOverlay();
     }
 
-//    initialize() {
-//        super.initialize();
-//        this.constructor.__super__.initialize.apply(this);
-//    }
+    /**
+     * view did appear lifecycle
+     */
+    viewDidAppear() {
+        // when home view did appear, remove all views from cahce except home view
+        manager.toIndex();
+        this.cartOverlay.refresh();
+    }
 
+    /**
+     * mount ui
+     */
     render() {
         super.render();
-        // load data
-        this.loadData();
-        // render html
-        this.$el.html(template({ name: this.name }));
+        // render view
+        this.$el.html(template());
+        // render infinite
+        this.infinite.render(this.$el.find('.wrapper'));
+        // render cartOverlay
+        this.cartOverlay.render(this.$el);
         return this;
     }
 
-    loadData() {
-        http.get('/static/assets/list.json')
-                .then((result) => {
-                    this.setup(result.data);
-                });
+    /**
+     * setup ui
+     */
+    setup(items) {
+        const $items = this.$el.find('.items');
+        for(let item of items) {
+            const itemView = new ProductItem(item, this.hander);
+            $items.append(itemView.render().el);
+        }
     }
 
-    setup(data) {
-        const $items = this.$el.find('.items');
-        data.forEach((obj) => {
-            const item = new Item(obj);
-            $items.append(item.render().el);
-        });
+    /**
+     * on message received
+     */
+    onMsgReceived(which, args) {
+        switch (which) {
+            // refresh count
+            case 1000: {
+                this.cartOverlay.refresh();
+                break;
+            }
+        }
     }
 }
 

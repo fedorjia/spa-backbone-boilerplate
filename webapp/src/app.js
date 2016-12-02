@@ -1,7 +1,6 @@
 // Application entry point.
 import 'babel-polyfill';
-import router from './router';
-
+import router from './libs/router';
 window.APP = {};
 
 /**

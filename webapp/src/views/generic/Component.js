@@ -6,16 +6,16 @@ class Component extends Backbone.View {
 	/***** lifecycle ****/
 
 	render() {
-		this.$el.addClass('page');
+		this.$el.addClass('view');
 		$('body').append(this.$el);
 		return this;
 	}
 
-	viewWillDisappear() {
-		
+	viewDidAppear() {
+
 	}
 
-	viewDidAppear() {
+	viewWillDisappear() {
 
 	}
 

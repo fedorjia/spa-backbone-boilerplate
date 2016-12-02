@@ -8,7 +8,7 @@ const buildTask = require('./webapp/build/prod').task;
 
 /** developement **/
 gulp.task('dev', [devTask], () => {
-    notifier.notify({ message: 'Development is ready' });
+    notifier.notify({ message: 'Development ready' });
 });
 
 /** production **/

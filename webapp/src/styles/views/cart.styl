@@ -1,0 +1,93 @@
+@import "./items/cart-item";
+
+.cart-view {
+    .wrapper {
+        padding-bottom: 68px;
+    }
+    .title-bar {
+        width: 100%;
+        height: 4rem;
+        position: relative;
+        .icon-back {
+            line-height: 4rem;
+            position: absolute;
+            left: 1rem;
+            font-size: 3rem;
+            z-index: 1;
+        }
+        .title {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            line-height: 4rem;
+            text-align: center;
+            font-weight: $font-weight-bold;
+        }
+    }
+
+    .user-box {
+		width: 100%;
+		padding: 5% 3%;
+		background-color: #fff;
+        position: relative;
+        display: flex;
+        align-items: center;
+		.avatar {
+			height: 60px;
+			width: 60px;
+            circle();
+            cover();
+		}
+        .name {
+            margin-left: 12px;
+        }
+	}
+
+    .empty-tip {
+        text-align: center;
+        padding: 4rem 1rem;
+    }
+
+    .items {
+        margin-top: 8px;
+    }
+
+    .amount-box {
+        margin-top: 8px;
+        background-color: #fff;
+        li {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .footer-box {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 60px;
+		color: white;
+        background-color: #1a1b1d;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        .total-amount {
+            span {
+                font-weight: $font-weight-bold;
+                font-size: 2rem;
+            }
+        }
+        .btn-buy {
+			width: 30%;
+            height: 44px;
+            line-height: 44px;
+            border-radius: 6px;
+			background-color: #fe4145;
+            text-align: center;
+		}
+	}
+}

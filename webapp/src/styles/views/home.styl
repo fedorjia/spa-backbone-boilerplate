@@ -1,23 +1,9 @@
-@import "../utils/variables";
-@import "../utils/mixins";
+@import "./items/product-item";
 
 .home-view {
-    h1 {
-      display : block;
-      text-align : center;
-      margin 24px 8px;
-    }
-    overflow-y : auto;
     .items {
         .item {
-            padding 12px;
-            line-height: 160%;
-            .title {
-              text-decoration: underline;
-            }
-            .desc {
-              color: $color-black-light;
-            }
+            padding-bottom: 0;
         }
     }
 }

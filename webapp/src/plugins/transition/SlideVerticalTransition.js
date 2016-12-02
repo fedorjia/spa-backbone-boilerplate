@@ -6,15 +6,15 @@ class SlideVerticalTransition {
     static type = 'slide-v';
 
     static duration = 320;
-    
+
     constructor(currentView, targetView) {
         this.currentView = currentView;
         this.targetView = targetView;
     }
 
     push(callback) {
-        const delay = this.currentView ? SlideVerticalTransition.duration/2 : 0;
-        
+        const delay = this.currentView ? SlideVerticalTransition.duration/4 : 0;
+
         // target view
         this.targetView.render();
 
@@ -34,7 +34,7 @@ class SlideVerticalTransition {
     }
 
     pop(callback) {
-        const delay = this.currentView ? SlideVerticalTransition.duration/2 : 0;
+        const delay = this.currentView ? SlideVerticalTransition.duration/4 : 0;
         this.targetView.$el.css({ opacity: 1, display: 'block' });
 
         // current view

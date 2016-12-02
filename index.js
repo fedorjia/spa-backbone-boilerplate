@@ -5,6 +5,19 @@ const path = require('path');
 const settings = require('./settings');
 const app = express();
 const conf = require('./webapp/build/conf');
+const remoteData = require('./webapp/static/assets/list.json');
+
+
+app.get('/api/list', function (req, res, next) {
+    const skip = req.query.skip || 0;
+    const limit = req.query.limit || 10;
+    let result = remoteData.filter((item) => {
+        return item.id > skip;
+    });
+
+    result = result.slice(0, limit);
+    res.json({success: true, result: result});
+});
 
 
 let index;

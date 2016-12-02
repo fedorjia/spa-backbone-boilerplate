@@ -44,9 +44,13 @@ clearfix() {
 }
 
 ellipsis() {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    // text-overflow: ellipsis;
+    // white-space: nowrap;
+    // overflow: hidden;
     overflow: hidden;
+  	text-overflow: ellipsis;
+  	-webkit-box-orient: vertical;
+    word-break: break-word;
 }
 
 circle() {

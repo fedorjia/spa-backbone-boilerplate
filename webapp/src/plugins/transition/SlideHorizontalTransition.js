@@ -6,7 +6,7 @@ class SlideHorizontalTransition {
     static type = 'slide-h';
 
     static duration = 320;
-    
+
     constructor(currentView, targetView) {
         this.currentView = currentView;
         this.targetView = targetView;
@@ -18,7 +18,7 @@ class SlideHorizontalTransition {
             this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
         }
 
-        const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
+        const delay = this.currentView ? SlideHorizontalTransition.duration/4 : 0;
 
         // target view
         this.targetView.render();
@@ -40,7 +40,7 @@ class SlideHorizontalTransition {
             this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
         }
 
-        const delay = this.currentView ? SlideHorizontalTransition.duration/2 : 0;
+        const delay = this.currentView ? SlideHorizontalTransition.duration/4 : 0;
 
         // target view
         this.targetView.$el.velocity('transition.slideLeftIn', {
