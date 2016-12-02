@@ -1,5 +1,7 @@
 > Single Page Mobile Applicatoin with Backbone.
 
+![image](webapp/static/images/QQ20161203-0.jpg)
+
 # install
 
 1. `npm install`
@@ -10,27 +12,27 @@
 # includes:
 
 * view management ( lifecycles )
-    
+
 * view transition
-    
+
 * view router
 
 
 # document
 
-1. develop your app	
+1. develop your app
 
 	* modify settings.js,   `debug = true`
-	
+
 	* `gulp dev`
 
-2. product your app	
+2. product your app
 
 	* modify settings.js,   `debug = false`
-	
+
 	* `gulp prod`
-	
-	
+
+
 # thanks
 
 1. `Browserify` & `ES6` for module files
