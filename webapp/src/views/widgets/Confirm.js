@@ -18,7 +18,7 @@ class ComfirmModal extends Modal {
         dismissOnBlur: false,
         confirmText: 'Confirm',
         cancelText: 'Cancel',
-        onDone: null
+        onSelect: null
     };
 
     constructor(options) {
@@ -41,15 +41,15 @@ class ComfirmModal extends Modal {
 
     onCancel() {
         this.dismiss();
-        if(this.options.onDone) {
-            this.options.onDone(0);
+        if(this.options.onSelect) {
+            this.options.onSelect(0);
         }
     }
 
     onConfirm() {
         this.dismiss();
-        if(this.options.onDone) {
-            this.options.onDone(1);
+        if(this.options.onSelect) {
+            this.options.onSelect(1);
         }
     }
 }

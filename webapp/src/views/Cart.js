@@ -44,7 +44,7 @@ class Cart extends Component {
         for(let item of items) {
             productAmount += item.count * item.price;
         }
-        
+
         this.$el.html(template({
             productAmount,
             freight: this.freight,
@@ -95,7 +95,7 @@ class Cart extends Component {
             // Alert.show('this is alert');
             Confirm.show('Pay', {
                 content: 'Pay for this shopping, Are you sure?',
-                onDone: (index) => {
+                onSelect: (index) => {
 
                 }
             });

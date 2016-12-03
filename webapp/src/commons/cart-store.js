@@ -75,6 +75,6 @@ const cartStore = {
         }
         return false;
     }
-}
+};
 
 export default cartStore;

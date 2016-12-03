@@ -49,6 +49,9 @@ class Infinite {
      * load data
      */
     load() {
+        if(this.isBusy) {
+            return;
+        }
         const params = this.options.params || {};
         params.skip = this.skip;
         params.limit = this.options.limit;
