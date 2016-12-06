@@ -3,8 +3,10 @@ import template from './tpls/cart.html';
 import cartStore from '../commons/cart-store';
 import CartItem from './items/CartItem';
 import Handler from '../libs/handler';
-import Alert from './widgets/Alert';
+// import Alert from './widgets/Alert';
 import Confirm from './widgets/Confirm';
+import viewport from '../libs/viewport';
+import config from '../libs/config';
 
 class Cart extends Component {
 
@@ -86,7 +88,11 @@ class Cart extends Component {
     }
 
     onBack() {
-        history.go(-1);
+        if(config.isActiveRouter) {
+            history.go(-1);
+        } else {
+            viewport.pop();
+        }
     }
 
     onBuy() {

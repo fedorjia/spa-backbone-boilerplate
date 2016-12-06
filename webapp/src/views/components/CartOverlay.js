@@ -5,13 +5,14 @@ import cartStore from '../../commons/cart-store';
  * Cart overlay view
  */
 class CartOverlay extends Backbone.View {
-    constructor() {
+    constructor(options) {
         super({
             className: 'cart-overlay',
             events: {
                 'click .inner': 'onClick'
             }
         });
+        this.handler = options.handler;
     }
 
     render($target) {
@@ -37,7 +38,8 @@ class CartOverlay extends Backbone.View {
     }
 
     onClick() {
-        APP.router.nav('cart');
+        this.handler.send(2000);
+        // APP.router.nav('cart');
     }
 }
 

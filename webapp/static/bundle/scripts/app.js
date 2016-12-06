@@ -7939,21 +7939,35 @@ exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.d
 
 require('babel-polyfill');
 
+var _Home = require('./views/Home');
+
+var _Home2 = _interopRequireDefault(_Home);
+
+var _viewport = require('./libs/viewport');
+
+var _viewport2 = _interopRequireDefault(_viewport);
+
 var _router = require('./libs/router');
 
 var _router2 = _interopRequireDefault(_router);
+
+var _config = require('./libs/config');
+
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.APP = {};
 
 $(function () {
-	_router2.default.start();
-
-	APP.router = _router2.default.appRouter;
+	if (_config2.default.isActiveRouter) {
+		_router2.default.start();
+	} else {
+		_viewport2.default.fly(_Home2.default);
+	}
 }());
 
-},{"./libs/router":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js","babel-polyfill":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.16.0@babel-polyfill/lib/index.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/commons/cart-store.js":[function(require,module,exports){
+},{"./libs/config":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/config.js","./libs/router":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js","./libs/viewport":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js","./views/Home":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js","babel-polyfill":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.16.0@babel-polyfill/lib/index.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/commons/cart-store.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8090,7 +8104,17 @@ var cartStore = {
 
 exports.default = cartStore;
 
-},{"babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/json/stringify":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/json/stringify.js","babel-runtime/core-js/object/keys":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/keys.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js":[function(require,module,exports){
+},{"babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/json/stringify":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/json/stringify.js","babel-runtime/core-js/object/keys":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/keys.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/config.js":[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    isActiveRouter: true
+};
+
+},{}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js":[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8242,7 +8266,131 @@ exports.default = {
     }
 };
 
-},{"babel-runtime/core-js/object/keys":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/keys.js","babel-runtime/core-js/promise":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/promise.js","whatwg-fetch":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.1.1.1@whatwg-fetch/fetch.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/manager.js":[function(require,module,exports){
+},{"babel-runtime/core-js/object/keys":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/keys.js","babel-runtime/core-js/promise":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/promise.js","whatwg-fetch":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.1.1.1@whatwg-fetch/fetch.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _viewport = require('./viewport');
+
+var _viewport2 = _interopRequireDefault(_viewport);
+
+var _transition = require('./transition');
+
+var _transition2 = _interopRequireDefault(_transition);
+
+var _routers = require('../routers');
+
+var _routers2 = _interopRequireDefault(_routers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var router = {
+    start: function start() {
+        var AppRouter = Backbone.Router.extend((0, _extends3.default)({}, _routers2.default, {
+            nav: function nav(path, params, animation, trigger) {
+                if (trigger === undefined) {
+                    trigger = true;
+                }
+
+                params = params || {};
+                params.__animation__ = animation || _transition2.default.defaultAnimation;
+                this.params = params;
+
+                this.navigate(path, { trigger: trigger });
+            }
+        }));
+
+        this.appRouter = new AppRouter();
+
+        Backbone.history.start({ pushState: true, root: '/' });
+    },
+
+    fly: function fly(view, params) {
+        params = params || {};
+        (0, _assign2.default)(params, this.appRouter.params);
+
+        _viewport2.default.fly(view, params);
+        this.appRouter.params = null;
+    }
+};
+
+exports.default = router;
+
+},{"../routers":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/routers.js","./transition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js","./viewport":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/helpers/extends":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/extends.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _NoneTransition = require('../plugins/transition/NoneTransition');
+
+var _NoneTransition2 = _interopRequireDefault(_NoneTransition);
+
+var _FadeTransition = require('../plugins/transition/FadeTransition');
+
+var _FadeTransition2 = _interopRequireDefault(_FadeTransition);
+
+var _SlideHorizontalTransition = require('../plugins/transition/SlideHorizontalTransition');
+
+var _SlideHorizontalTransition2 = _interopRequireDefault(_SlideHorizontalTransition);
+
+var _SlideVerticalTransition = require('../plugins/transition/SlideVerticalTransition');
+
+var _SlideVerticalTransition2 = _interopRequireDefault(_SlideVerticalTransition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var transition = {
+
+	defaultAnimation: 'slide-h', get: function get(currentView, targetView, animation) {
+		var result = void 0;
+
+		var animationType = animation;
+		if (_.isObject(animation)) {
+			animationType = animation.type;
+		}
+
+		switch (animationType) {
+			case 'fade':
+				{
+					result = new _FadeTransition2.default(currentView, targetView);
+					break;
+				}
+			case 'slide-h':
+				{
+					result = new _SlideHorizontalTransition2.default(currentView, targetView);
+					break;
+				}
+			case 'slide-v':
+				{
+					result = new _SlideVerticalTransition2.default(currentView, targetView);
+					break;
+				}
+			default:
+				{
+					result = new _NoneTransition2.default(currentView, targetView);
+					break;
+				}
+		}
+		return result;
+	}
+};
+
+exports.default = transition;
+
+},{"../plugins/transition/FadeTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/FadeTransition.js","../plugins/transition/NoneTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/NoneTransition.js","../plugins/transition/SlideHorizontalTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/SlideHorizontalTransition.js","../plugins/transition/SlideVerticalTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/SlideVerticalTransition.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8253,9 +8401,13 @@ var _transition = require('./transition');
 
 var _transition2 = _interopRequireDefault(_transition);
 
-var _Home = require('../views/Home');
+var _router = require('./router');
 
-var _Home2 = _interopRequireDefault(_Home);
+var _router2 = _interopRequireDefault(_router);
+
+var _config = require('./config');
+
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8270,11 +8422,19 @@ function getCurrentView() {
 	}
 }
 
+function getKey(defination) {
+	if (_config2.default.isActiveRouter) {
+		return location.pathname;
+	} else {
+		return defination;
+	}
+}
+
 function getCacheItemByDefination(defination) {
 	var result = void 0;
 	for (var i = 0; i < cache.length; i++) {
 		var item = cache[i];
-		if (item.key === defination) {
+		if (item.key === getKey(defination)) {
 			result = item;
 			break;
 		}
@@ -8283,11 +8443,18 @@ function getCacheItemByDefination(defination) {
 }
 
 function removeModals() {
-	$('.modal').remove();
+	if (APP.activeModal) {
+		APP.activeModal.dismiss();
+	}
 }
 
 var manager = {
 	fly: function fly(defination, args) {
+		args = args || {};
+		if (!args.__animation__) {
+			args.__animation__ = _transition2.default.defaultAnimation;
+		}
+
 		removeModals();
 
 		var len = cache.length;
@@ -8299,14 +8466,14 @@ var manager = {
 				this.push(defination, args);
 			} else {
 				var currentCacheItem = cache[len - 1];
-				if (currentCacheItem.key === defination) {
+				if (currentCacheItem.key === getKey(defination)) {
 					this.replace(defination, args);
 				} else {
 					if (len === 1) {
 						throw new Error('cache size incorrect');
 					}
 					var prevCacheItem = cache[len - 2];
-					if (prevCacheItem.key === defination) {
+					if (prevCacheItem.key === getKey(defination)) {
 						this.pop(args);
 					} else {
 						this.popTo(cacheItem.key, args);
@@ -8328,7 +8495,11 @@ var manager = {
 
 		tran['push'](function () {
 			targetView.__animation__ = args.__animation__;
-			cache.push({ key: defination, value: targetView });
+			if (_config2.default.isActiveRouter) {
+				targetView.router = _router2.default.appRouter;
+			}
+
+			cache.push({ key: getKey(defination), value: targetView });
 			targetView.viewDidAppear();
 		});
 	},
@@ -8342,11 +8513,14 @@ var manager = {
 
 		tran['push'](function () {
 			targetView.__animation__ = args.__animation__;
+			if (_config2.default.isActiveRouter) {
+				targetView.router = _router2.default.appRouter;
+			}
 
 			currentView.remove();
 			cache.splice(len - 1, 1);
 
-			cache.push({ key: defination, value: targetView });
+			cache.push({ key: getKey(defination), value: targetView });
 			targetView.viewDidAppear();
 		});
 	},
@@ -8414,132 +8588,7 @@ var manager = {
 
 exports.default = manager;
 
-},{"../views/Home":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js","./transition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _manager = require('./manager');
-
-var _manager2 = _interopRequireDefault(_manager);
-
-var _transition = require('./transition');
-
-var _transition2 = _interopRequireDefault(_transition);
-
-var _routers = require('../routers');
-
-var _routers2 = _interopRequireDefault(_routers);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var router = {
-    start: function start() {
-        var AppRouter = Backbone.Router.extend((0, _extends3.default)({}, _routers2.default, {
-            nav: function nav(path, params, animation, trigger) {
-                if (trigger === undefined) {
-                    trigger = true;
-                }
-
-                params = params || {};
-                params.__animation__ = animation || _transition2.default.defaultAnimation;
-                this.params = params;
-
-                this.navigate(path, { trigger: trigger });
-            }
-        }));
-
-        this.appRouter = new AppRouter();
-
-        Backbone.history.start({ pushState: true, root: '/' });
-    },
-
-    fly: function fly(view, params) {
-        params = params || {};
-        params.__animation__ = _transition2.default.defaultAnimation;
-        (0, _assign2.default)(params, this.appRouter.params || {});
-
-        _manager2.default.fly(view, params);
-        this.appRouter.params = null;
-    }
-};
-
-exports.default = router;
-
-},{"../routers":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/routers.js","./manager":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/manager.js","./transition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/helpers/extends":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/extends.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _NoneTransition = require('../plugins/transition/NoneTransition');
-
-var _NoneTransition2 = _interopRequireDefault(_NoneTransition);
-
-var _FadeTransition = require('../plugins/transition/FadeTransition');
-
-var _FadeTransition2 = _interopRequireDefault(_FadeTransition);
-
-var _SlideHorizontalTransition = require('../plugins/transition/SlideHorizontalTransition');
-
-var _SlideHorizontalTransition2 = _interopRequireDefault(_SlideHorizontalTransition);
-
-var _SlideVerticalTransition = require('../plugins/transition/SlideVerticalTransition');
-
-var _SlideVerticalTransition2 = _interopRequireDefault(_SlideVerticalTransition);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var transition = {
-
-	defaultAnimation: 'slide-h', get: function get(currentView, targetView, animation) {
-		var result = void 0;
-
-		var animationType = animation;
-		if (_.isObject(animation)) {
-			animationType = animation.type;
-		}
-
-		switch (animationType) {
-			case 'fade':
-				{
-					result = new _FadeTransition2.default(currentView, targetView);
-					break;
-				}
-			case 'slide-h':
-				{
-					result = new _SlideHorizontalTransition2.default(currentView, targetView);
-					break;
-				}
-			case 'slide-v':
-				{
-					result = new _SlideVerticalTransition2.default(currentView, targetView);
-					break;
-				}
-			default:
-				{
-					result = new _NoneTransition2.default(currentView, targetView);
-					break;
-				}
-		}
-		return result;
-	}
-};
-
-exports.default = transition;
-
-},{"../plugins/transition/FadeTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/FadeTransition.js","../plugins/transition/NoneTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/NoneTransition.js","../plugins/transition/SlideHorizontalTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/SlideHorizontalTransition.js","../plugins/transition/SlideVerticalTransition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/SlideVerticalTransition.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/FadeTransition.js":[function(require,module,exports){
+},{"./config":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/config.js","./router":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/router.js","./transition":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/transition.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/plugins/transition/FadeTransition.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8899,13 +8948,17 @@ var _handler = require('../libs/handler');
 
 var _handler2 = _interopRequireDefault(_handler);
 
-var _Alert = require('./widgets/Alert');
-
-var _Alert2 = _interopRequireDefault(_Alert);
-
 var _Confirm = require('./widgets/Confirm');
 
 var _Confirm2 = _interopRequireDefault(_Confirm);
+
+var _viewport = require('../libs/viewport');
+
+var _viewport2 = _interopRequireDefault(_viewport);
+
+var _config = require('../libs/config');
+
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9058,7 +9111,11 @@ var Cart = function (_Component) {
     }, {
         key: 'onBack',
         value: function onBack() {
-            history.go(-1);
+            if (_config2.default.isActiveRouter) {
+                history.go(-1);
+            } else {
+                _viewport2.default.pop();
+            }
         }
     }, {
         key: 'onBuy',
@@ -9067,7 +9124,7 @@ var Cart = function (_Component) {
             if (items.length > 0) {
                 _Confirm2.default.show('Pay', {
                     content: 'Pay for this shopping, Are you sure?',
-                    onDone: function onDone(index) {}
+                    onSelect: function onSelect(index) {}
                 });
             }
         }
@@ -9077,7 +9134,7 @@ var Cart = function (_Component) {
 
 exports.default = Cart;
 
-},{"../commons/cart-store":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/commons/cart-store.js","../libs/handler":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Component.js","./items/CartItem":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/CartItem.js","./tpls/cart.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/cart.html","./widgets/Alert":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Alert.js","./widgets/Confirm":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js","babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js":[function(require,module,exports){
+},{"../commons/cart-store":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/commons/cart-store.js","../libs/config":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/config.js","../libs/handler":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js","../libs/viewport":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Component.js","./items/CartItem":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/CartItem.js","./tpls/cart.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/cart.html","./widgets/Confirm":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js","babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Home.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9120,9 +9177,9 @@ var _Infinite = require('./widgets/Infinite');
 
 var _Infinite2 = _interopRequireDefault(_Infinite);
 
-var _manager = require('../libs/manager');
+var _viewport = require('../libs/viewport');
 
-var _manager2 = _interopRequireDefault(_manager);
+var _viewport2 = _interopRequireDefault(_viewport);
 
 var _home = require('./tpls/home.html');
 
@@ -9139,6 +9196,14 @@ var _ProductItem2 = _interopRequireDefault(_ProductItem);
 var _CartOverlay = require('./components/CartOverlay');
 
 var _CartOverlay2 = _interopRequireDefault(_CartOverlay);
+
+var _Cart = require('./Cart');
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _config = require('../libs/config');
+
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9161,14 +9226,14 @@ var HomeView = function (_Component) {
             onDataReceived: _this.setup.bind(_this)
         });
 
-        _this.cartOverlay = new _CartOverlay2.default();
+        _this.cartOverlay = new _CartOverlay2.default({ handler: _this.hander });
         return _this;
     }
 
     (0, _createClass3.default)(HomeView, [{
         key: 'viewDidAppear',
         value: function viewDidAppear() {
-            _manager2.default.toIndex();
+            _viewport2.default.toIndex();
             this.cartOverlay.refresh();
         }
     }, {
@@ -9222,6 +9287,15 @@ var HomeView = function (_Component) {
                         this.cartOverlay.refresh();
                         break;
                     }
+                case 2000:
+                    {
+                        if (_config2.default.isActiveRouter) {
+                            this.router.nav('cart');
+                        } else {
+                            _viewport2.default.fly(_Cart2.default);
+                        }
+                        break;
+                    }
             }
         }
     }]);
@@ -9230,7 +9304,7 @@ var HomeView = function (_Component) {
 
 exports.default = HomeView;
 
-},{"../libs/handler":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js","../libs/manager":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/manager.js","./components/CartOverlay":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/components/CartOverlay.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Component.js","./items/ProductItem":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/ProductItem.js","./tpls/home.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/home.html","./widgets/Infinite":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Infinite.js","babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/components/CartOverlay.js":[function(require,module,exports){
+},{"../libs/config":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/config.js","../libs/handler":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/handler.js","../libs/viewport":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js","./Cart":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/Cart.js","./components/CartOverlay":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/components/CartOverlay.js","./generic/Component":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Component.js","./items/ProductItem":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/ProductItem.js","./tpls/home.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/home.html","./widgets/Infinite":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Infinite.js","babel-runtime/core-js/get-iterator":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/get-iterator.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/components/CartOverlay.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9274,14 +9348,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var CartOverlay = function (_Backbone$View) {
     (0, _inherits3.default)(CartOverlay, _Backbone$View);
 
-    function CartOverlay() {
+    function CartOverlay(options) {
         (0, _classCallCheck3.default)(this, CartOverlay);
-        return (0, _possibleConstructorReturn3.default)(this, (CartOverlay.__proto__ || (0, _getPrototypeOf2.default)(CartOverlay)).call(this, {
+
+        var _this = (0, _possibleConstructorReturn3.default)(this, (CartOverlay.__proto__ || (0, _getPrototypeOf2.default)(CartOverlay)).call(this, {
             className: 'cart-overlay',
             events: {
                 'click .inner': 'onClick'
             }
         }));
+
+        _this.handler = options.handler;
+        return _this;
     }
 
     (0, _createClass3.default)(CartOverlay, [{
@@ -9312,7 +9390,7 @@ var CartOverlay = function (_Backbone$View) {
     }, {
         key: 'onClick',
         value: function onClick() {
-            APP.router.nav('cart');
+            this.handler.send(2000);
         }
     }]);
     return CartOverlay;
@@ -9464,6 +9542,8 @@ var Modal = function (_Backbone$View) {
             this.$el.velocity('transition.shrinkIn', this.options.duration, function () {
                 _this2.didAppear();
             });
+
+            APP.activeModal = this;
         }
     }, {
         key: 'dismiss',
@@ -9477,6 +9557,8 @@ var Modal = function (_Backbone$View) {
             this.$el.velocity('fadeOut', this.options.duration, function () {
                 _this3.$el.remove();
             });
+
+            APP.activeModal = null;
         }
     }]);
     return Modal;
@@ -9742,21 +9824,6 @@ __p+='<div class="item-inner">\n    <div class="thumbnail cover" style="backgrou
 return __p;
 };
 
-},{}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/alert.html":[function(require,module,exports){
-module.exports = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class="inner">\n    <div class="title">'+
-((__t=(title))==null?'':__t)+
-'</div>\n    <div class="content">'+
-((__t=(content))==null?'':__t)+
-'</div>\n    <div class="buttons">\n        <div class="button button-clear">'+
-((__t=(buttonText))==null?'':__t)+
-'</div>\n    </div>\n</div>\n';
-}
-return __p;
-};
-
 },{}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/confirm.html":[function(require,module,exports){
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -9774,101 +9841,7 @@ __p+='<div class="inner">\n    <div class="title">'+
 return __p;
 };
 
-},{}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Alert.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
-
-var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _get2 = require('babel-runtime/helpers/get');
-
-var _get3 = _interopRequireDefault(_get2);
-
-var _inherits2 = require('babel-runtime/helpers/inherits');
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _Modal2 = require('../generic/Modal');
-
-var _Modal3 = _interopRequireDefault(_Modal2);
-
-var _alert = require('../tpls/widgets/alert.html');
-
-var _alert2 = _interopRequireDefault(_alert);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    show: function show(title, options) {
-        options = options || {};
-        options.title = title;
-
-        new AlertModal(options).show();
-    }
-};
-
-var AlertModal = function (_Modal) {
-    (0, _inherits3.default)(AlertModal, _Modal);
-
-    function AlertModal(options) {
-        (0, _classCallCheck3.default)(this, AlertModal);
-
-        options.className = 'ui-alert';
-        options.events = {
-            'click .button': 'onClick'
-        };
-        return (0, _possibleConstructorReturn3.default)(this, (AlertModal.__proto__ || (0, _getPrototypeOf2.default)(AlertModal)).call(this, (0, _assign2.default)({}, AlertModal.defaults, options)));
-    }
-
-    (0, _createClass3.default)(AlertModal, [{
-        key: 'show',
-        value: function show() {
-            (0, _get3.default)(AlertModal.prototype.__proto__ || (0, _getPrototypeOf2.default)(AlertModal.prototype), 'show', this).call(this, (0, _alert2.default)({
-                title: this.options.title,
-                content: this.options.content,
-                buttonText: this.options.buttonText
-            }));
-        }
-    }, {
-        key: 'onClick',
-        value: function onClick() {
-            this.dismiss();
-            if (this.options.onDone) {
-                this.options.onDone();
-            }
-        }
-    }]);
-    return AlertModal;
-}(_Modal3.default);
-
-AlertModal.defaults = {
-    dismissOnBlur: false,
-    buttonText: 'OK',
-    onDone: null
-};
-
-},{"../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/alert.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/alert.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js":[function(require,module,exports){
+},{}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Confirm.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9950,16 +9923,16 @@ var ComfirmModal = function (_Modal) {
         key: 'onCancel',
         value: function onCancel() {
             this.dismiss();
-            if (this.options.onDone) {
-                this.options.onDone(0);
+            if (this.options.onSelect) {
+                this.options.onSelect(0);
             }
         }
     }, {
         key: 'onConfirm',
         value: function onConfirm() {
             this.dismiss();
-            if (this.options.onDone) {
-                this.options.onDone(1);
+            if (this.options.onSelect) {
+                this.options.onSelect(1);
             }
         }
     }]);
@@ -9970,7 +9943,7 @@ ComfirmModal.defaults = {
     dismissOnBlur: false,
     confirmText: 'Confirm',
     cancelText: 'Cancel',
-    onDone: null
+    onSelect: null
 };
 
 },{"../generic/Modal":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/generic/Modal.js","../tpls/widgets/confirm.html":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/tpls/widgets/confirm.html","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/get":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/get.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/widgets/Infinite.js":[function(require,module,exports){
@@ -10048,6 +10021,9 @@ var Infinite = function () {
         value: function load() {
             var _this = this;
 
+            if (this.isBusy) {
+                return;
+            }
             var params = this.options.params || {};
             params.skip = this.skip;
             params.limit = this.options.limit;

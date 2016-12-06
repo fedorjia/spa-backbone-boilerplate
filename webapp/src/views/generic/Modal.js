@@ -48,6 +48,8 @@ class Modal extends Backbone.View {
         this.$el.velocity('transition.shrinkIn', this.options.duration, () => {
             this.didAppear();
         });
+
+        APP.activeModal = this;
     }
 
     dismiss(event) {
@@ -58,6 +60,8 @@ class Modal extends Backbone.View {
         this.$el.velocity('fadeOut', this.options.duration, () => {
             this.$el.remove();
         });
+
+        APP.activeModal = null;
     }
 }
 

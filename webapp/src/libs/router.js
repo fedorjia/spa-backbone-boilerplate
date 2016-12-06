@@ -1,4 +1,4 @@
-import manager from './manager';
+import viewport from './viewport';
 import transition from './transition';
 import routers from '../routers';
 
@@ -36,10 +36,9 @@ const router = {
     fly(view, params) {
         // merge params
         params = params || {};
-		params.__animation__ = transition.defaultAnimation;
-        Object.assign(params, this.appRouter.params || {});
+        Object.assign(params, this.appRouter.params);
 
-        manager.fly(view, params);
+        viewport.fly(view, params);
         this.appRouter.params = null;
     }
 };

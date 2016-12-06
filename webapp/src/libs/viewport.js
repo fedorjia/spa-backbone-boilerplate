@@ -1,6 +1,6 @@
 import transition from './transition';
-import Home from '../views/Home';
-
+import router from './router';
+import config from './config';
 const cache = [];
 
 /***
@@ -15,6 +15,14 @@ function getCurrentView() {
 	}
 }
 
+function getKey(defination) {
+	if(config.isActiveRouter) {
+		return location.pathname;
+	} else {
+		return defination;
+	}
+}
+
 /**
  * get cache item by class defination
  */
@@ -22,7 +30,7 @@ function getCacheItemByDefination(defination) {
 	let result;
 	for(let i=0; i<cache.length; i++) {
 		let item = cache[i];
-		if(item.key === defination) {
+		if(item.key === getKey(defination)) {
 			result = item;
 			break;
 		}
@@ -34,7 +42,9 @@ function getCacheItemByDefination(defination) {
  * remove all modals
  */
 function removeModals() {
-	$('.modal').remove();
+	if(APP.activeModal) {
+		APP.activeModal.dismiss();
+	}
 }
 
 /***************************************************
@@ -45,6 +55,11 @@ const manager = {
 	 * view transition
 	 */
 	fly: function(defination, args) {
+		args = args || {};
+		if(!args.__animation__) {
+			args.__animation__ = transition.defaultAnimation;
+		}
+
 		// remove all modals
 		removeModals();
 
@@ -59,7 +74,7 @@ const manager = {
 				this.push(defination, args);
 			} else {
 				const currentCacheItem = cache[len-1];
-				if(currentCacheItem.key === defination) {
+				if(currentCacheItem.key === getKey(defination)) {
 					// replace
 					this.replace(defination, args);
 				} else {
@@ -67,7 +82,7 @@ const manager = {
 						throw new Error('cache size incorrect');
 					}
 					const prevCacheItem = cache[len-2];
-					if(prevCacheItem.key === defination) {
+					if(prevCacheItem.key === getKey(defination)) {
 						// pop
 						this.pop(args);
 					} else {
@@ -94,7 +109,12 @@ const manager = {
 		// transiton push
 		tran['push'](() => {
 			targetView.__animation__ = args.__animation__;
-			cache.push({key: defination, value: targetView});
+			if(config.isActiveRouter) {
+				// bind router
+				targetView.router = router.appRouter;
+			}
+
+			cache.push({key: getKey(defination), value: targetView});
 			targetView.viewDidAppear();
 		});
 	},
@@ -113,11 +133,15 @@ const manager = {
 		// transiton push
 		tran['push'](() => {
 			targetView.__animation__ = args.__animation__;
+			if(config.isActiveRouter) {
+				// bind router
+				targetView.router = router.appRouter;
+			}
 			// remove and pop current view
 			currentView.remove();
 			cache.splice(len-1, 1);
 			// push target view
-			cache.push({key: defination, value: targetView});
+			cache.push({key: getKey(defination), value: targetView});
 			targetView.viewDidAppear();
 		});
 	},
@@ -188,7 +212,7 @@ const manager = {
 
 	toIndex() {
 		const len = cache.length;
-        if(len> 1) {
+        if(len > 1) {
             cache.splice(0, len-1);
         }
 	}
