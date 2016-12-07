@@ -1,3 +1,4 @@
+import viewport from '../../libs/viewport';
 /***
  * Generic Modal
  */
@@ -5,7 +6,8 @@ class Modal extends Backbone.View {
 
     static defaults = {
         duration: 240,
-        dismissOnBlur: false
+        dismissOnBlur: false,
+        animation: 'transition.shrinkIn'
     };
 
     constructor(options) {
@@ -45,11 +47,11 @@ class Modal extends Backbone.View {
         $modal.html($inner);
         $body.append(this.$el);
 
-        this.$el.velocity('transition.shrinkIn', this.options.duration, () => {
+        this.$el.velocity(this.options.animation, this.options.duration, () => {
             this.didAppear();
         });
 
-        APP.activeModal = this;
+        viewport.setActiveModal(this);
     }
 
     dismiss(event) {
@@ -61,7 +63,7 @@ class Modal extends Backbone.View {
             this.$el.remove();
         });
 
-        APP.activeModal = null;
+        viewport.setActiveModal(null);
     }
 }
 

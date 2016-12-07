@@ -25,7 +25,6 @@ module.exports = {
 
     "globals": {
         "$": true,
-        "APP": true,
         "process": true,
         "rm": true,
         "mkdir": true,

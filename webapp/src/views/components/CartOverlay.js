@@ -39,7 +39,6 @@ class CartOverlay extends Backbone.View {
 
     onClick() {
         this.handler.send(2000);
-        // APP.router.nav('cart');
     }
 }
 

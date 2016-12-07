@@ -7957,8 +7957,6 @@ var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.APP = {};
-
 $(function () {
 	if (_config2.default.isActiveRouter) {
 		_router2.default.start();
@@ -8411,14 +8409,15 @@ var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var cache = [];
+var viewCache = [];
+var activeModal = void 0;
 
 function getCurrentView() {
-	var len = cache.length;
+	var len = viewCache.length;
 	if (len === 0) {
 		return null;
 	} else {
-		return cache[len - 1].value;
+		return viewCache[len - 1].value;
 	}
 }
 
@@ -8432,20 +8431,14 @@ function getKey(defination) {
 
 function getCacheItemByDefination(defination) {
 	var result = void 0;
-	for (var i = 0; i < cache.length; i++) {
-		var item = cache[i];
+	for (var i = 0; i < viewCache.length; i++) {
+		var item = viewCache[i];
 		if (item.key === getKey(defination)) {
 			result = item;
 			break;
 		}
 	}
 	return result;
-}
-
-function removeModals() {
-	if (APP.activeModal) {
-		APP.activeModal.dismiss();
-	}
 }
 
 var manager = {
@@ -8455,9 +8448,11 @@ var manager = {
 			args.__animation__ = _transition2.default.defaultAnimation;
 		}
 
-		removeModals();
+		if (activeModal) {
+			activeModal.dismiss();
+		}
 
-		var len = cache.length;
+		var len = viewCache.length;
 		if (len === 0) {
 			this.push(defination, args);
 		} else {
@@ -8465,14 +8460,14 @@ var manager = {
 			if (!cacheItem) {
 				this.push(defination, args);
 			} else {
-				var currentCacheItem = cache[len - 1];
+				var currentCacheItem = viewCache[len - 1];
 				if (currentCacheItem.key === getKey(defination)) {
 					this.replace(defination, args);
 				} else {
 					if (len === 1) {
 						throw new Error('cache size incorrect');
 					}
-					var prevCacheItem = cache[len - 2];
+					var prevCacheItem = viewCache[len - 2];
 					if (prevCacheItem.key === getKey(defination)) {
 						this.pop(args);
 					} else {
@@ -8499,12 +8494,12 @@ var manager = {
 				targetView.router = _router2.default.appRouter;
 			}
 
-			cache.push({ key: getKey(defination), value: targetView });
+			viewCache.push({ key: getKey(defination), value: targetView });
 			targetView.viewDidAppear();
 		});
 	},
 	replace: function replace(defination, args) {
-		var len = cache.length;
+		var len = viewCache.length;
 		var targetView = new defination(args);
 		var currentView = getCurrentView();
 		var tran = _transition2.default.get(currentView, targetView);
@@ -8518,14 +8513,14 @@ var manager = {
 			}
 
 			currentView.remove();
-			cache.splice(len - 1, 1);
+			viewCache.splice(len - 1, 1);
 
-			cache.push({ key: getKey(defination), value: targetView });
+			viewCache.push({ key: getKey(defination), value: targetView });
 			targetView.viewDidAppear();
 		});
 	},
 	pop: function pop() {
-		var len = cache.length;
+		var len = viewCache.length;
 		var currentView = getCurrentView();
 		if (!currentView) {
 			throw new Error('no view to pop');
@@ -8534,7 +8529,7 @@ var manager = {
 			throw new Error('cache size incorrect');
 		}
 
-		var cacheItem = cache[len - 2];
+		var cacheItem = viewCache[len - 2];
 		var targetView = cacheItem.value;
 		var animation = currentView.__animation__;
 
@@ -8544,7 +8539,7 @@ var manager = {
 
 		tran['pop'](function () {
 			currentView.remove();
-			cache.splice(len - 1, 1);
+			viewCache.splice(len - 1, 1);
 			targetView.viewDidAppear();
 		});
 	},
@@ -8553,7 +8548,7 @@ var manager = {
 		if (!cacheItem) {
 			throw new Error('target view not found');
 		}
-		var len = cache.length;
+		var len = viewCache.length;
 		var currentView = getCurrentView();
 		if (!currentView) {
 			throw new Error('no view to pop');
@@ -8570,19 +8565,22 @@ var manager = {
 		var tran = _transition2.default.get(currentView, targetView, animation);
 
 		tran['pop'](function () {
-			var index = cache.indexOf(cacheItem);
+			var index = viewCache.indexOf(cacheItem);
 			for (var i = index + 1; i < len; i++) {
-				cache[i].value.remove();
+				viewCache[i].value.remove();
 			}
-			cache.splice(index + 1, len - 1);
+			viewCache.splice(index + 1, len - 1);
 			targetView.viewDidAppear();
 		});
 	},
-	toIndex: function toIndex() {
-		var len = cache.length;
+	index: function index() {
+		var len = viewCache.length;
 		if (len > 1) {
-			cache.splice(0, len - 1);
+			viewCache.splice(0, len - 1);
 		}
+	},
+	setActiveModal: function setActiveModal(modal) {
+		activeModal = modal;
 	}
 };
 
@@ -9233,7 +9231,7 @@ var HomeView = function (_Component) {
     (0, _createClass3.default)(HomeView, [{
         key: 'viewDidAppear',
         value: function viewDidAppear() {
-            _viewport2.default.toIndex();
+            _viewport2.default.index();
             this.cartOverlay.refresh();
         }
     }, {
@@ -9490,6 +9488,10 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _viewport = require('../../libs/viewport');
+
+var _viewport2 = _interopRequireDefault(_viewport);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Modal = function (_Backbone$View) {
@@ -9539,11 +9541,11 @@ var Modal = function (_Backbone$View) {
             $modal.html($inner);
             $body.append(this.$el);
 
-            this.$el.velocity('transition.shrinkIn', this.options.duration, function () {
+            this.$el.velocity(this.options.animation, this.options.duration, function () {
                 _this2.didAppear();
             });
 
-            APP.activeModal = this;
+            _viewport2.default.setActiveModal(this);
         }
     }, {
         key: 'dismiss',
@@ -9558,7 +9560,7 @@ var Modal = function (_Backbone$View) {
                 _this3.$el.remove();
             });
 
-            APP.activeModal = null;
+            _viewport2.default.setActiveModal(null);
         }
     }]);
     return Modal;
@@ -9566,11 +9568,12 @@ var Modal = function (_Backbone$View) {
 
 Modal.defaults = {
     duration: 240,
-    dismissOnBlur: false
+    dismissOnBlur: false,
+    animation: 'transition.shrinkIn'
 };
 exports.default = Modal;
 
-},{"babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/CartItem.js":[function(require,module,exports){
+},{"../../libs/viewport":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/libs/viewport.js","babel-runtime/core-js/object/assign":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/assign.js","babel-runtime/core-js/object/get-prototype-of":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/createClass.js","babel-runtime/helpers/inherits":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/inherits.js","babel-runtime/helpers/possibleConstructorReturn":"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/node_modules/.6.18.0@babel-runtime/helpers/possibleConstructorReturn.js"}],"/Users/fedor/works/private/github/backbone-spa-mobile-boilerplate/webapp/src/views/items/CartItem.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -40,7 +40,7 @@ class HomeView extends Component {
      */
     viewDidAppear() {
         // when home view did appear, remove all views from cahce except home view
-        viewport.toIndex();
+        viewport.index();
         this.cartOverlay.refresh();
     }
 

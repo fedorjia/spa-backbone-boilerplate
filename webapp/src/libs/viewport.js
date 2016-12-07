@@ -1,17 +1,19 @@
 import transition from './transition';
 import router from './router';
 import config from './config';
-const cache = [];
+
+const viewCache = [];
+let activeModal;
 
 /***
  * get currentView
  */
 function getCurrentView() {
-	const len = cache.length;
+	const len = viewCache.length;
 	if(len === 0) {
 		return null;
 	} else {
-		return cache[len-1].value;
+		return viewCache[len-1].value;
 	}
 }
 
@@ -28,23 +30,14 @@ function getKey(defination) {
  */
 function getCacheItemByDefination(defination) {
 	let result;
-	for(let i=0; i<cache.length; i++) {
-		let item = cache[i];
+	for(let i=0; i < viewCache.length; i++) {
+		let item = viewCache[i];
 		if(item.key === getKey(defination)) {
 			result = item;
 			break;
 		}
 	}
 	return result;
-}
-
-/**
- * remove all modals
- */
-function removeModals() {
-	if(APP.activeModal) {
-		APP.activeModal.dismiss();
-	}
 }
 
 /***************************************************
@@ -60,10 +53,12 @@ const manager = {
 			args.__animation__ = transition.defaultAnimation;
 		}
 
-		// remove all modals
-		removeModals();
+		// remove actived modal
+		if(activeModal) {
+			activeModal.dismiss();
+		}
 
-		let len = cache.length;
+		let len = viewCache.length;
 		if(len === 0) {
 			// push
 			this.push(defination, args);
@@ -73,7 +68,7 @@ const manager = {
 				// push
 				this.push(defination, args);
 			} else {
-				const currentCacheItem = cache[len-1];
+				const currentCacheItem = viewCache[len-1];
 				if(currentCacheItem.key === getKey(defination)) {
 					// replace
 					this.replace(defination, args);
@@ -81,7 +76,7 @@ const manager = {
 					if(len === 1) {
 						throw new Error('cache size incorrect');
 					}
-					const prevCacheItem = cache[len-2];
+					const prevCacheItem = viewCache[len-2];
 					if(prevCacheItem.key === getKey(defination)) {
 						// pop
 						this.pop(args);
@@ -114,7 +109,7 @@ const manager = {
 				targetView.router = router.appRouter;
 			}
 
-			cache.push({key: getKey(defination), value: targetView});
+			viewCache.push({key: getKey(defination), value: targetView});
 			targetView.viewDidAppear();
 		});
 	},
@@ -123,7 +118,7 @@ const manager = {
 	 * view replace
 	 */
 	replace(defination, args) {
-		const len = cache.length;
+		const len = viewCache.length;
 		const targetView = new defination(args);
 		const currentView = getCurrentView();
 		const tran = transition.get(currentView, targetView);
@@ -139,9 +134,9 @@ const manager = {
 			}
 			// remove and pop current view
 			currentView.remove();
-			cache.splice(len-1, 1);
+			viewCache.splice(len-1, 1);
 			// push target view
-			cache.push({key: getKey(defination), value: targetView});
+			viewCache.push({key: getKey(defination), value: targetView});
 			targetView.viewDidAppear();
 		});
 	},
@@ -150,7 +145,7 @@ const manager = {
 	 * view pop
 	 */
 	pop() {
-		const len = cache.length;
+		const len = viewCache.length;
 		const currentView = getCurrentView();
 		if(!currentView) {
 			throw new Error('no view to pop');
@@ -159,7 +154,7 @@ const manager = {
 			throw new Error('cache size incorrect');
 		}
 
-		const cacheItem = cache[len-2];
+		const cacheItem = viewCache[len-2];
 		const targetView = cacheItem.value;
 		const animation = currentView.__animation__;
 
@@ -169,7 +164,7 @@ const manager = {
 		// transiton pop
 		tran['pop'](() => {
 			currentView.remove();
-			cache.splice(len-1, 1);
+			viewCache.splice(len-1, 1);
 			targetView.viewDidAppear();
 		});
 	},
@@ -182,7 +177,7 @@ const manager = {
 		if(!cacheItem) {
 			throw new Error('target view not found');
 		}
-		const len = cache.length;
+		const len = viewCache.length;
 		const currentView = getCurrentView();
 		if(!currentView) {
 			throw new Error('no view to pop');
@@ -201,20 +196,24 @@ const manager = {
 		// transiton pop
 		tran['pop'](() => {
 			// remove views
-			const index = cache.indexOf(cacheItem);
+			const index = viewCache.indexOf(cacheItem);
 			for(let i=index+1; i<len; i++) {
-				cache[i].value.remove();
+				viewCache[i].value.remove();
 			}
-			cache.splice(index+1, len-1);
+			viewCache.splice(index+1, len-1);
 			targetView.viewDidAppear();
 		});
 	},
 
-	toIndex() {
-		const len = cache.length;
+	index() {
+		const len = viewCache.length;
         if(len > 1) {
-            cache.splice(0, len-1);
+			viewCache.splice(0, len-1);
         }
+	},
+
+	setActiveModal(modal) {
+		activeModal = modal;
 	}
 };
 
