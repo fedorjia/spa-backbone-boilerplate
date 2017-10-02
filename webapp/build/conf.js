@@ -9,22 +9,20 @@ const coreName = 'core';
 const path = {
 	static: staticName,
 	webapp: webapp,
-	styleEntry: `${src}/styles/app.styl`,
+	styleEntry: `${src}/style/app.styl`,
 	scriptEntry: `${src}/app.js`,
 	src: {
 		root: src,
 		index: `${webapp}/index.html`,
-		static: `${webapp}/${staticName}`,
-		style: `${src}/styles`,
-		script: `${src}/scripts`
+		static: `${webapp}/${staticName}`
 	},
 
 	dist: {
 		root: dist,
 		index: `${dist}/index.html`,
 		static: `${dist}/${staticName}`,
-		style: `${dist}/${staticName}/styles`,
-		script: `${dist}/${staticName}/scripts`
+		style: `${dist}/${staticName}/style`,
+		script: `${dist}/${staticName}/script`
 	}
 };
 
@@ -34,8 +32,8 @@ const conf = {
 	core: {
 		name: coreName,
 		items: [
-			`${path.src.static}/vendors/backscore.min.js`,
-			`${path.src.static}/vendors/velocity.all.min.js`
+			`${path.src.static}/vendor/backscore.min.js`,
+			`${path.src.static}/vendor/velocity.all.min.js`
 		]
 	}
 };

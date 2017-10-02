@@ -5,7 +5,7 @@ const path = require('path');
 const settings = require('./settings');
 const app = express();
 const conf = require('./webapp/build/conf');
-const remoteData = require('./webapp/static/assets/list.json');
+const remoteData = require('./webapp/static/asset/list.json');
 
 
 app.get('/api/list', function (req, res, next) {

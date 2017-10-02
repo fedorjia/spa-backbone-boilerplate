@@ -1,6 +1,6 @@
 > Single Page Mobile Applicatoin with Backbone.
 
-![image](webapp/static/images/QQ20161203-0.jpg)
+![image](QQ20161203-0.jpg)
 
 # install
 

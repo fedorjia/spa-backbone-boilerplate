@@ -36,7 +36,7 @@ gulp.task(scriptTask, () => {
 
 /** main **/
 gulp.task(mainTask, [coreTask, styleTask, scriptTask], () => {
-	gulp.watch(path.src.style + '/**/*.styl', [styleTask]);
+	gulp.watch(path.src.root + '/**/*.styl', [styleTask]);
 	// inject html
 	return utils.injectHTML('dev');
 });

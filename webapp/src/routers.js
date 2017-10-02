@@ -1,6 +1,6 @@
-import router from './libs/router';
-import Home from './views/Home';
-import Cart from './views/Cart';
+import router from './framework/router';
+import Home from './page/home';
+import Cart from './page/cart';
 
 const routers = {
 
