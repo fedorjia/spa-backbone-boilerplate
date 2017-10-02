@@ -35,7 +35,7 @@ module.exports = {
 				return gulp.src(src)
 						.pipe(stylus())
 						.pipe(rename(`${target}.css`))
-						.pipe(gulp.dest(`${path.src.static}/bundle/style`));
+						.pipe(gulp.dest(`${path.src.style}`));
 			}
 		}
 	},
@@ -56,7 +56,7 @@ module.exports = {
 			} else {
 				return gulp.src(src)
 						.pipe(concat(`${target}.js`))
-						.pipe(gulp.dest(`${path.src.static}/bundle/script`));
+						.pipe(gulp.dest(`${path.src.script}`));
 			}
 		}
 	},
@@ -76,8 +76,8 @@ module.exports = {
 			jsPath = [`${path.dist.script}/${conf.core.name}.min.*.js`, `${path.dist.script}/${conf.appname}.min.*.js`];
 		} else {
 			root = path.webapp;
-			cssPath = [`${path.src.static}/bundle/style/${conf.appname}.css`];
-			jsPath = [`${path.src.static}/bundle/script/${conf.core.name}.js`, `${path.src.static}/bundle/script/${conf.appname}.js`];
+			cssPath = [`${path.src.style}/${conf.appname}.css`];
+			jsPath = [`${path.src.script}/${conf.core.name}.js`, `${path.src.script}/${conf.appname}.js`];
 		}
 
 		let targetObject = gulp.src(`${root}/index.html`);
@@ -133,7 +133,7 @@ module.exports = {
 						throw new Error(err.message);
 					})
 					.pipe(source(conf.appname + '.js'))
-					.pipe(gulp.dest(`${conf.path.src.static}/bundle/script`));
+					.pipe(gulp.dest(`${conf.path.src.script}`));
 		}
 
 		if(isWatch) {

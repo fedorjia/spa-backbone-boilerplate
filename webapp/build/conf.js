@@ -14,7 +14,9 @@ const path = {
 	src: {
 		root: src,
 		index: `${webapp}/index.html`,
-		static: `${webapp}/${staticName}`
+		static: `${webapp}/${staticName}`,
+        style: `${webapp}/${staticName}/bundle/style`,
+        script: `${webapp}/${staticName}/bundle/script`
 	},
 
 	dist: {
