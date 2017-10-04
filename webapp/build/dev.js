@@ -41,7 +41,7 @@ gulp.task(mainTask, () => {
 
         // start browserSync server
         browserSync.init({
-            proxy: "localhost:3100"
+            proxy: conf.proxy
         });
     });
 });

@@ -1,12 +1,14 @@
-import Component from '../../common/generic/component';
-import Infinite from '../../common/widget/infinite';
+import Component from '../../framework/generic/component';
 import viewport from '../../framework/viewport';
-import template from './index.html';
 import Handler from '../../framework/handler';
+import config from '../../framework/config';
+
+import Infinite from '../../common/widget/infinite';
+import template from './index.html';
 import ProductItem from './product-item';
 import CartOverlay from '../../common/component/cart-overlay';
 import Cart from '../cart';
-import config from '../../framework/config';
+
 
 class HomeView extends Component {
     // initialize() {

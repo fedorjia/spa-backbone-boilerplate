@@ -22,15 +22,12 @@
 
 1. develop your app
 
-	* modify settings.js,   `debug = true`
-
-	* `gulp dev`
+	* `npm run dev`
 
 2. product your app
 
-	* modify settings.js,   `debug = false`
-
-	* `gulp prod`
+	* `npm run prod`
+	* `node ./server`
 
 
 # thanks

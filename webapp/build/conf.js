@@ -5,8 +5,9 @@ const dist = `webapp/dist`;
 const view = './server/view';
 
 module.exports = {
-    staticPrefix: 'static',
     name: 'app',
+    staticPrefix: 'static',
+    proxy: 'localhost:3200',
 
     view: {
         path: view,

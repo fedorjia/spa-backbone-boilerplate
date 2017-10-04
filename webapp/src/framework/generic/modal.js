@@ -1,4 +1,4 @@
-import viewport from '../../framework/viewport';
+import viewport from '../viewport';
 /***
  * Generic Modal
  */

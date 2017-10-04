@@ -1,8 +1,8 @@
-import Component from '../../common/generic/component';
+import Component from '../../framework/generic/component';
+import Handler from '../../framework/handler';
 import template from './index.html';
 import cartStore from '../../common/cart-store';
 import CartItem from './cart-item';
-import Handler from '../../framework/handler';
 // import Alert from './widgets/Alert';
 import Confirm from '../../common/widget/confirm';
 import viewport from '../../framework/viewport';
