@@ -1,5 +1,5 @@
 // Application entry point.
-import 'babel-polyfill';
+// import 'babel-polyfill';
 import Home from './page/home';
 import viewport from './framework/viewport';
 import router from './framework/router';

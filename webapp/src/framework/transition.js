@@ -8,7 +8,7 @@ import SlideVerticalTransition from './plugin/transition/SlideVerticalTransition
  */
 const transition = {
 
-	defaultAnimation: 'slide-h', // none, fade, slide-h, slide-v
+	defaultAnimation: 'none', // none, fade, slide-h, slide-v
 
 	get(currentView, targetView, animation) {
 		let result;

@@ -4,6 +4,8 @@ const gulp = require('gulp'),
 	browserify = require('browserify'),
 	watchify = require('watchify'),
 	source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
+    size = require('gulp-size'),
 	rename = require('gulp-rename'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
@@ -17,8 +19,6 @@ const gulp = require('gulp'),
 	}),
 	conf = require('./conf');
 
-const path = conf.path;
-
 module.exports = {
 	/**
 	 * generate style
@@ -30,12 +30,13 @@ module.exports = {
 				return gulp.src(src)
 						.pipe(stylus({compress: true}))
 						.pipe(rename(`${target}.min.${hash}.css`))
-						.pipe(gulp.dest(`${path.dist.style}`));
+						.pipe(gulp.dest(`${conf.app.dist.style}`));
 			} else {
 				return gulp.src(src)
-						.pipe(stylus())
+						.pipe(stylus({url: {name: 'embedurl'}}))
 						.pipe(rename(`${target}.css`))
-						.pipe(gulp.dest(`${path.src.style}`));
+						.pipe(gulp.dest(`${conf.app.src.style}`))
+                        .pipe(browserSync.reload({stream: true}));
 			}
 		}
 	},
@@ -52,11 +53,12 @@ module.exports = {
 						.pipe(concat(`${target}.js`))
 						.pipe(rename({suffix: '.min.' + hash}))
 						.pipe(uglify())
-						.pipe(gulp.dest(`${path.dist.script}`));
+                        .pipe(size())
+						.pipe(gulp.dest(`${conf.app.dist.script}`));
 			} else {
 				return gulp.src(src)
 						.pipe(concat(`${target}.js`))
-						.pipe(gulp.dest(`${path.src.script}`));
+						.pipe(gulp.dest(`${conf.app.src.script}`));
 			}
 		}
 	},
@@ -66,50 +68,49 @@ module.exports = {
 	 * inject to html
 	 */
 	injectHTML(mode) {
-		let root;
 		let cssPath;
 		let jsPath;
 
+		const lastIndex = conf.app.dist.index.lastIndexOf('/');
+        const indexRoot = conf.app.dist.index.substring(0, lastIndex);
+        let staticPath;
+
 		if (mode === 'build') {
-			root = path.dist.root;
-			cssPath = [`${path.dist.style}/${conf.appname}.min.*.css`];
-			jsPath = [`${path.dist.script}/${conf.core.name}.min.*.js`, `${path.dist.script}/${conf.appname}.min.*.js`];
+            staticPath = conf.app.dist.static;
+			cssPath = [`${conf.app.dist.style}/${conf.app.name}.min.*.css`];
+			jsPath = [`${conf.app.dist.script}/${conf.core.name}.min.*.js`, `${conf.app.dist.script}/${conf.app.name}.min.*.js`];
 		} else {
-			root = path.webapp;
-			cssPath = [`${path.src.style}/${conf.appname}.css`];
-			jsPath = [`${path.src.script}/${conf.core.name}.js`, `${path.src.script}/${conf.appname}.js`];
+            staticPath = conf.app.src.static;
+			cssPath = [`${conf.app.src.style}/${conf.app.name}.css`];
+			jsPath = [`${conf.app.src.script}/${conf.core.name}.js`, `${conf.app.src.script}/${conf.app.name}.js`];
 		}
 
-		let targetObject = gulp.src(`${root}/index.html`);
+		let targetIndex = gulp.src(`${conf.app.src.index}`);
 		let sourcesCss = gulp.src(cssPath, {read: false});
 		let sourcesJs = gulp.src(jsPath, {read: false});
 
 		// inject
-		const p = targetObject.pipe(inject(sourcesCss, {
+		const p = targetIndex.pipe(inject(sourcesCss, {
 					addRootSlash: false,
 					transform: (filePath) => {
-						const index = filePath.indexOf('/' + path.static);
-						return `<link rel="stylesheet" href="${filePath.substring(index)}"/>`;
+						return `<link rel="stylesheet" href="/${conf.staticName}${filePath.substring(staticPath.length)}"/>`;
 					}
 				}))
-				.pipe(gulp.dest(root))
 				.pipe(inject(sourcesJs, {
 					addRootSlash: false,
 					transform: (filePath) => {
-						const index = filePath.indexOf('/' + path.static);
-						return `<script src="${filePath.substring(index)}"></script>`;
+						return `<script src="/${conf.staticName}${filePath.substring(staticPath.length)}"></script>`;
 					}
 				}));
 
-		if(mode === 'build') {
-			// minify html
+		if(mode === 'build') { // minify html
 			p.pipe(htmlmin({
 				collapseWhitespace: true,
 				removeComments: true,
 				minifyJS: true
-			})).pipe(gulp.dest(root));
+			})).pipe(gulp.dest(indexRoot));
 		} else {
-			p.pipe(gulp.dest(root));
+			p.pipe(gulp.dest(indexRoot));
 		}
 	},
 
@@ -119,10 +120,13 @@ module.exports = {
 	 */
 	browserifyScripts(isWatch) {
 		let bundler = browserify({
-			transform: [babel.configure({extensions: ['.js']}), underscorify],
+			transform: [babel.configure({
+                presets: ['stage-0'],
+
+			}), underscorify],
 			cache: {},
 			packageCache: {},
-			fullPaths: true
+			fullPaths: false
 		});
 
 		function __rebundle() {
@@ -132,18 +136,20 @@ module.exports = {
 						notifier.notify({ message: 'Error: ' + err.message });
 						throw new Error(err.message);
 					})
-					.pipe(source(conf.appname + '.js'))
-					.pipe(gulp.dest(`${conf.path.src.script}`));
+					.pipe(source(conf.app.name + '.js'))
+                    .pipe(buffer())
+					.pipe(gulp.dest(`${conf.app.src.script}`));
 		}
 
 		if(isWatch) {
 			bundler = watchify(bundler);
 			bundler.on('update', () => {
-				util.log(util.colors.green('rebundle script.'));
-				__rebundle();
+				__rebundle()
+                    .pipe(browserSync.reload({stream: true}));
 			});
 		}
-		bundler.add(conf.path.scriptEntry);
+		bundler.add(conf.app.entry.script);
+
 		return __rebundle();
 	}
 };

@@ -9,7 +9,6 @@ const gulp = require('gulp'),
 	conf = require('./conf');
 
 
-const path = conf.path;
 const hash = Math.ceil(Date.now()/1000);
 
 const mainTask = 'main-build';
@@ -20,10 +19,10 @@ const scriptTask = 'script-build';
 
 /** clean **/
 gulp.task(cleanTask, () => {
-	rm('-rf', path.dist.root);
-	mkdir('-p', path.dist.static);
-	cp('-R', path.src.index, path.dist.index); // move index page
-	cp('-R', `${path.src.static}/*`, `${path.dist.static}`); // move static
+	rm('-rf', conf.app.dist.root);
+	mkdir('-p', conf.app.dist.static);
+	cp('-R', conf.app.src.index, conf.app.dist.index); // move index page
+	cp('-R', `${conf.app.src.static}/*`, `${conf.app.dist.static}`); // move static
 });
 
 
@@ -34,7 +33,7 @@ gulp.task(coreTask, () => {
 
 /** style **/
 gulp.task(styleTask, () => {
-	return utils.generateStyle(path.styleEntry, conf.appname, 'build', hash);
+	return utils.generateStyle(conf.app.entry.style, conf.app.name, 'build', hash);
 });
 
 /** script **/
@@ -42,7 +41,7 @@ gulp.task(scriptTask, () => {
 	const piped = utils.browserifyScripts(false);
 	return piped.pipe(rename({ suffix: `.min.${hash}` }))
 			.pipe(streamify(uglify()))
-			.pipe(gulp.dest(conf.path.dist.script));
+			.pipe(gulp.dest(conf.app.dist.script));
 });
 
 gulp.task(mainTask, [cleanTask, coreTask, styleTask, scriptTask], () => {

@@ -1,43 +1,42 @@
 'use strict';
 
-const webapp = 'webapp';
-const src = `${webapp}/src`;
-const dist = `${webapp}/dist`;
 const staticName = 'static';
-const coreName = 'core';
+const src = `webapp/src`;
+const dist = `webapp/dist`;
 
-const path = {
-	static: staticName,
-	webapp: webapp,
-	styleEntry: `${src}/style/app.styl`,
-	scriptEntry: `${src}/app.js`,
-	src: {
-		root: src,
-		index: `${webapp}/index.html`,
-		static: `${webapp}/${staticName}`,
-        style: `${webapp}/${staticName}/bundle/style`,
-        script: `${webapp}/${staticName}/bundle/script`
-	},
+module.exports = {
+    staticName: staticName,
 
-	dist: {
-		root: dist,
-		index: `${dist}/index.html`,
-		static: `${dist}/${staticName}`,
-		style: `${dist}/${staticName}/style`,
-		script: `${dist}/${staticName}/script`
-	}
-};
+    app: {
+	    name: 'app',
+        entry: {
+            style: `${src}/style/app.styl`,
+            script: `${src}/app.js`
+        },
 
-const conf = {
-	appname: 'app',
-	path: path,
+        src: {
+            root: src,
+            index: `${src}/index.html`,
+            static: `${src}/${staticName}`,
+            style: `${src}/${staticName}/bundle`,
+            script: `${src}/${staticName}/bundle`
+        },
+
+        dist: {
+            root: dist,
+            index: './server/view/index.html',
+            static: `${dist}`,
+            style: `${dist}/style`,
+            script: `${dist}/script`
+        }
+    },
+
 	core: {
-		name: coreName,
+		name: 'core',
 		items: [
-			`${path.src.static}/vendor/backscore.min.js`,
-			`${path.src.static}/vendor/velocity.all.min.js`
+            // `./webapp/src/static/vendor/jquery.min.js`,
+			`./webapp/src/static/vendor/backscore.min.js`,
+			`./webapp/src/static/vendor/velocity.all.min.js`
 		]
 	}
 };
-
-module.exports = conf;

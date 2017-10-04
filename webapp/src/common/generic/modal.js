@@ -7,7 +7,7 @@ class Modal extends Backbone.View {
     static defaults = {
         duration: 240,
         dismissOnBlur: false,
-        animation: 'transition.shrinkIn'
+        animation: 'transition.fadeIn' // none, transition.fadeIn, transition.shrinkIn
     };
 
     constructor(options) {
@@ -47,9 +47,14 @@ class Modal extends Backbone.View {
         $modal.html($inner);
         $body.append(this.$el);
 
-        this.$el.velocity(this.options.animation, this.options.duration, () => {
+        if(this.options.animation === 'none') {
+            this.$el.css({opacity: 1});
             this.didAppear();
-        });
+        } else {
+            this.$el.velocity(this.options.animation, this.options.duration, () => {
+                this.didAppear();
+            });
+        }
 
         viewport.setActiveModal(this);
     }
