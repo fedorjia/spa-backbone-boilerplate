@@ -5,8 +5,6 @@ const settings = require('./settings');
 const app = express();
 const nunjucks = require('nunjucks');
 
-const routers = require('./controller');
-
 const ENV = process.env.NODE_ENV;
 
 /*static path*/
@@ -25,13 +23,26 @@ nunjucks.configure('./server/view', {
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 
-// app.use(function(req, res) {
-//     // html5 push state
-//     res.sendFile(__dirname + '/' + index);
-// });
+/* routers */
+app.get('/api/list', (req, res, next) => {
+    const skip = req.query.skip || 0;
+    const limit = req.query.limit || 10;
+    const remoteData = require('./list.json') || [];
+    let result = remoteData.filter((item) => {
+        return item.id > skip;
+    });
 
-// routers
-app.use(routers);
+    result = result.slice(0, limit);
+    res.json({success: true, result: result});
+});
+
+app.get('/*', function(req, res) {
+    res.render('index.html');
+});
+
+// app.use(function(req, res) { // html5 push state
+//     res.sendFile(__dirname + '/dist/index.html');
+// });
 
 app.listen(settings.port);
 util.log(settings['appname'] + ' runnng port:' + settings.port);

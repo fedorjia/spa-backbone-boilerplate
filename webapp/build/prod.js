@@ -1,52 +1,96 @@
 'use strict';
 require('shelljs/global');
 
-const gulp = require('gulp'),
-	utils = require('./utils'),
-	streamify = require('gulp-streamify'),
-	rename = require('gulp-rename'),
-	uglify = require('gulp-uglify'),
-	conf = require('./conf');
+const gulp = require('gulp');
+const sequence = require('gulp-sequence');
+const rev = require('gulp-rev');
+const revCss = require('gulp-rev-css-url');
+const revCollector = require('gulp-rev-collector');
+const cleanCSS = require('gulp-clean-css');
+const uglify = require('gulp-uglify');
+const streamify = require('gulp-streamify');
+const size = require('gulp-size');
+const gutil = require('gulp-util');
 
-
-const hash = Math.ceil(Date.now()/1000);
+const conf = require('./conf');
+const utils = require('./utils');
 
 const mainTask = 'main-build';
 const coreTask = 'core-build';
 const cleanTask = 'clean-build';
 const styleTask = 'style-build';
 const scriptTask = 'script-build';
+const revAssetTask = 'revscript-build';
+const collectorTask = 'collector-build';
 
 /** clean **/
 gulp.task(cleanTask, () => {
-	rm('-rf', conf.app.dist.root);
-	mkdir('-p', conf.app.dist.static);
-	cp('-R', conf.app.src.index, conf.app.dist.index); // move index page
-	cp('-R', `${conf.app.src.static}/*`, `${conf.app.dist.static}`); // move static
+    rm('-rf', conf.dist);
 });
 
 
 /** core **/
 gulp.task(coreTask, () => {
-	return utils.generateScript(conf.core.items, conf.core.name, 'build', hash);
+    return utils.concatScript(conf.core.items, conf.core.name)
+        .pipe(streamify(uglify()))
+        .pipe(size())
+        .pipe(gulp.dest(`${conf.src.script}`));
 });
 
 /** style **/
 gulp.task(styleTask, () => {
-	return utils.generateStyle(conf.app.entry.style, conf.app.name, 'build', hash);
+    return utils.compileStyle(conf.entry.style, conf.name)
+        .pipe(cleanCSS())
+        .pipe(size())
+        .pipe(gulp.dest(`${conf.src.style}`));
 });
 
 /** script **/
 gulp.task(scriptTask, () => {
-	const piped = utils.browserifyScripts(false);
-	return piped.pipe(rename({ suffix: `.min.${hash}` }))
-			.pipe(streamify(uglify()))
-			.pipe(gulp.dest(conf.app.dist.script));
+    return utils.browserifyScript(false)
+        .pipe(streamify(uglify()))
+        .pipe(size())
+        .pipe(gulp.dest(`${conf.src.script}`));
 });
 
-gulp.task(mainTask, [cleanTask, coreTask, styleTask, scriptTask], () => {
-	// inject html
-	return utils.injectHTML('build');
+/**
+ * rev resources
+ */
+gulp.task(revAssetTask, () => {
+    return gulp.src(`${conf.src.static}/**/*`)
+        .pipe(rev())
+        .pipe(revCss())
+        .pipe(gulp.dest(`${conf.dist}`))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest(`${conf.dist}`))
+});
+
+/**
+ * collector
+ */
+gulp.task(collectorTask, () => {
+    return gulp.src([`${conf.dist}/*.json`, `${conf.src.root}/*.html`])
+        .pipe(revCollector({
+            // replaceReved: true,
+            // dirReplacements: {
+            //     '/static/bundle': '/static'
+            //     'cdn/': function(manifest_value) {
+            //         return '//cdn' + (Math.floor(Math.random() * 9) + 1) + '.' + 'exsample.dot' + '/img/' + manifest_value;
+            //     }
+            // }
+        }))
+        .pipe(gulp.dest(conf.view.path));
+});
+
+
+gulp.task(mainTask, () => {
+    sequence(
+        cleanTask,
+        [styleTask, coreTask, scriptTask],
+        [revAssetTask],
+        collectorTask, () => {
+            gutil.log(gutil.colors.green('build succeed'));
+        });
 });
 
 exports.task = mainTask;
