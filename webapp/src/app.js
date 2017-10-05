@@ -1,17 +1,24 @@
 // Application entry point.
 // import 'babel-polyfill';
-import Home from './page/home';
 import viewport from './framework/viewport';
 import router from './framework/router';
 import config from './framework/config';
+
+import Home from './page/home';
+import routers from './routers';
+
+window.APP = {};
 
 /**
  * APP Entry
  */
 $(function() {
+    APP.viewport = viewport;
+    APP.router = router;
+
 	if(config.isActiveRouter) {
-		router.start();
+        router.start(routers);
 	} else {
-		viewport.fly(Home);
+        viewport.fly(Home);
 	}
 }());

@@ -1,12 +1,12 @@
 import viewport from './viewport';
 import transition from './transition';
-import routers from '../routers';
+import config from './config';
 
 const router = {
     /**
      * start router
      */
-	start: function() {
+	start: function(routers) {
         const AppRouter = Backbone.Router.extend({
 
             ...routers,
@@ -26,8 +26,17 @@ const router = {
 
         this.appRouter = new AppRouter();
         // HTML5 push state
-        Backbone.history.start({pushState:true, root: '/'});
+        Backbone.history.start({pushState: config.pushState, root: '/'});
         // Backbone.history.start();
+
+        return this;
+    },
+
+    /**
+     * router navigation
+     */
+    nav(path, params, animation, trigger) {
+        this.appRouter.nav(path, params, animation, trigger);
     },
 
     /**
@@ -36,7 +45,7 @@ const router = {
     fly(view, params) {
         // merge params
         params = params || {};
-        Object.assign(params, this.appRouter.params);
+        Object.assign(params, this.appRouter.params || {});
 
         viewport.fly(view, params);
         this.appRouter.params = null;

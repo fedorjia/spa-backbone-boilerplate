@@ -5,7 +5,6 @@ import cartStore from '../../common/cart-store';
 import CartItem from './cart-item';
 // import Alert from './widgets/Alert';
 import Confirm from '../../common/widget/confirm';
-import viewport from '../../framework/viewport';
 import config from '../../framework/config';
 
 class Cart extends Component {
@@ -91,7 +90,7 @@ class Cart extends Component {
         if(config.isActiveRouter) {
             history.go(-1);
         } else {
-            viewport.pop();
+            APP.viewport.pop();
         }
     }
 

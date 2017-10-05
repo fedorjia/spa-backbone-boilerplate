@@ -2593,10 +2593,6 @@ for (var i = 0; i < DOMIterables.length; i++) {
 },{}],125:[function(require,module,exports){
 'use strict';
 
-var _home = require('./page/home');
-
-var _home2 = _interopRequireDefault(_home);
-
 var _viewport = require('./framework/viewport');
 
 var _viewport2 = _interopRequireDefault(_viewport);
@@ -2609,17 +2605,30 @@ var _config = require('./framework/config');
 
 var _config2 = _interopRequireDefault(_config);
 
+var _home = require('./page/home');
+
+var _home2 = _interopRequireDefault(_home);
+
+var _routers = require('./routers');
+
+var _routers2 = _interopRequireDefault(_routers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+window.APP = {};
+
 $(function () {
-	if (_config2.default.isActiveRouter) {
-		_router2.default.start();
-	} else {
-		_viewport2.default.fly(_home2.default);
-	}
+       APP.viewport = _viewport2.default;
+       APP.router = _router2.default;
+
+       if (_config2.default.isActiveRouter) {
+              _router2.default.start(_routers2.default);
+       } else {
+              _viewport2.default.fly(_home2.default);
+       }
 }());
 
-},{"./framework/config":130,"./framework/router":139,"./framework/viewport":141,"./page/home":146}],126:[function(require,module,exports){
+},{"./framework/config":131,"./framework/router":139,"./framework/viewport":141,"./page/home":146,"./routers":148}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2787,6 +2796,14 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _config = require('../../framework/config');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _cart = require('../../page/cart');
+
+var _cart2 = _interopRequireDefault(_cart);
+
 var _cartStore = require('../../common/cart-store');
 
 var _cartStore2 = _interopRequireDefault(_cartStore);
@@ -2796,7 +2813,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var CartOverlay = function (_Backbone$View) {
     (0, _inherits3.default)(CartOverlay, _Backbone$View);
 
-    function CartOverlay(options) {
+    function CartOverlay() {
         (0, _classCallCheck3.default)(this, CartOverlay);
 
         var _this = (0, _possibleConstructorReturn3.default)(this, (CartOverlay.__proto__ || (0, _getPrototypeOf2.default)(CartOverlay)).call(this, {
@@ -2807,28 +2824,20 @@ var CartOverlay = function (_Backbone$View) {
         }));
 
         _this.template = _.template('<div class="inner">\n\t\t\t\t<i class="iconfont icon-cart"/>\n\t\t\t\t<div class="badge"><%=count%></div>\n\t\t\t</div>');
-
-        _this.handler = options.handler;
         return _this;
     }
 
     (0, _createClass3.default)(CartOverlay, [{
         key: 'render',
-        value: function render($target) {
+        value: function render() {
             (0, _get3.default)(CartOverlay.prototype.__proto__ || (0, _getPrototypeOf2.default)(CartOverlay.prototype), 'render', this).call(this);
 
             this.$el.html(this.template({ count: _cartStore2.default.count() }));
-            $target.append(this.$el);
             return this;
         }
     }, {
         key: 'refresh',
-        value: function refresh(item) {
-            this.updateCount();
-        }
-    }, {
-        key: 'updateCount',
-        value: function updateCount() {
+        value: function refresh() {
             var count = _cartStore2.default.count();
             var $count = this.$el.find('.badge');
             if (count > 9) {
@@ -2840,7 +2849,11 @@ var CartOverlay = function (_Backbone$View) {
     }, {
         key: 'onClick',
         value: function onClick() {
-            this.handler.send(2000);
+            if (_config2.default.isActiveRouter) {
+                APP.router.nav('cart');
+            } else {
+                APP.viewport.fly(_cart2.default);
+            }
         }
     }]);
     return CartOverlay;
@@ -2848,7 +2861,122 @@ var CartOverlay = function (_Backbone$View) {
 
 exports.default = CartOverlay;
 
-},{"../../common/cart-store":126,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],128:[function(require,module,exports){
+},{"../../common/cart-store":126,"../../framework/config":131,"../../page/cart":144,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],128:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+require('whatwg-fetch');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function __createURL(url) {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    url += (url.indexOf('?') !== -1 ? '&' : '?') + '__v=1';
+    return url;
+}
+
+function __fetch(url, options) {
+    return fetch(url, options).then(function (response) {
+        return response.json();
+    }).then(function (json) {
+        return { data: json.result, __timestamp__: Date.now() };
+    }).catch(function (ex) {
+        return _promise2.default.reject({ message: ex.message, __timestamp__: Date.now() });
+    });
+}
+
+function __request(method, url, params) {
+    params = params || {};
+    url = __createURL(url);
+
+    var header = {};
+    var query = (0, _keys2.default)(params).map(function (key) {
+        return key + '=' + encodeURIComponent(params[key]);
+    }).join('&');
+
+    var opts = {
+        headers: header,
+        method: method
+    };
+
+    if (method === 'GET') {
+        if (query) {
+            url = url + '&' + query;
+        }
+    } else {
+        opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        opts.body = query;
+    }
+
+    return __fetch(url, opts);
+}
+
+function __upload(method, url, params, files) {
+    url = __createURL(url);
+
+    var formData = new FormData();
+    for (var prop in params) {
+        if (params.hasOwnProperty(prop)) {
+            formData.append(prop, params[prop]);
+        }
+    }
+    if (files) {
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            formData.append(i + '-' + file.name, file);
+        }
+    }
+    return __fetch(url, {
+        method: method,
+        credentials: 'include',
+        body: formData
+    });
+}
+
+exports.default = {
+    get: function get(url) {
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        return __request('GET', url, params);
+    },
+    delete: function _delete(url) {
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        return __request('DELETE', url, params);
+    },
+    post: function post(url) {
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        return __request('POST', url, params);
+    },
+    upload: function upload(url) {
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var files = arguments[2];
+
+        return __upload('POST', url, params, files);
+    },
+    put: function put(url) {
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var files = arguments[2];
+
+        return __request('PUT', url, params, files);
+    }
+};
+
+},{"babel-runtime/core-js/object/keys":8,"babel-runtime/core-js/promise":10,"whatwg-fetch":124}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2953,7 +3081,7 @@ ComfirmModal.defaults = {
     onSelect: null
 };
 
-},{"../../framework/generic/modal":132,"babel-runtime/core-js/object/assign":3,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],129:[function(require,module,exports){
+},{"../../framework/generic/modal":133,"babel-runtime/core-js/object/assign":3,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2972,7 +3100,7 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _http = require('../../framework/http');
+var _http = require('../http');
 
 var _http2 = _interopRequireDefault(_http);
 
@@ -2986,7 +3114,7 @@ var Infinite = function () {
             url: '',
             autoScroll: true,
             limit: 20,
-            delay: 500,
+            delay: 280,
             params: {},
             footerLoadingText: 'Loading...',
             footerMoreText: 'Load More',
@@ -3070,7 +3198,7 @@ var Infinite = function () {
 
                 setTimeout(function () {
                     _this2.load();
-                }, this.delay);
+                }, this.options.delay);
             }
         }
     }]);
@@ -3133,17 +3261,18 @@ var LoadMoreBar = function () {
 
 exports.default = Infinite;
 
-},{"../../framework/http":134,"babel-runtime/core-js/object/assign":3,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14}],130:[function(require,module,exports){
+},{"../http":128,"babel-runtime/core-js/object/assign":3,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14}],131:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
-    isActiveRouter: true
+    isActiveRouter: true,
+    pushState: true
 };
 
-},{}],131:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3204,7 +3333,7 @@ var Component = function (_Backbone$View) {
 
 exports.default = Component;
 
-},{"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],132:[function(require,module,exports){
+},{"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3324,7 +3453,7 @@ Modal.defaults = {
     animation: 'transition.fadeIn' };
 exports.default = Modal;
 
-},{"../viewport":141,"babel-runtime/core-js/object/assign":3,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],133:[function(require,module,exports){
+},{"../viewport":141,"babel-runtime/core-js/object/assign":3,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],134:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3361,122 +3490,7 @@ var Handler = function () {
 
 exports.default = Handler;
 
-},{"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14}],134:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-require('whatwg-fetch');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function __createURL(url) {
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-        return url;
-    }
-    url += (url.indexOf('?') !== -1 ? '&' : '?') + '__v=1';
-    return url;
-}
-
-function __fetch(url, options) {
-    return fetch(url, options).then(function (response) {
-        return response.json();
-    }).then(function (json) {
-        return { data: json.result, __timestamp__: Date.now() };
-    }).catch(function (ex) {
-        return _promise2.default.reject({ message: ex.message, __timestamp__: Date.now() });
-    });
-}
-
-function __request(method, url, params) {
-    params = params || {};
-    url = __createURL(url);
-
-    var header = {};
-    var query = (0, _keys2.default)(params).map(function (key) {
-        return key + '=' + encodeURIComponent(params[key]);
-    }).join('&');
-
-    var opts = {
-        headers: header,
-        method: method
-    };
-
-    if (method === 'GET') {
-        if (query) {
-            url = url + '&' + query;
-        }
-    } else {
-        opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        opts.body = query;
-    }
-
-    return __fetch(url, opts);
-}
-
-function __upload(method, url, params, files) {
-    url = __createURL(url);
-
-    var formData = new FormData();
-    for (var prop in params) {
-        if (params.hasOwnProperty(prop)) {
-            formData.append(prop, params[prop]);
-        }
-    }
-    if (files) {
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            formData.append(i + '-' + file.name, file);
-        }
-    }
-    return __fetch(url, {
-        method: method,
-        credentials: 'include',
-        body: formData
-    });
-}
-
-exports.default = {
-    get: function get(url) {
-        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        return __request('GET', url, params);
-    },
-    delete: function _delete(url) {
-        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        return __request('DELETE', url, params);
-    },
-    post: function post(url) {
-        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        return __request('POST', url, params);
-    },
-    upload: function upload(url) {
-        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var files = arguments[2];
-
-        return __upload('POST', url, params, files);
-    },
-    put: function put(url) {
-        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var files = arguments[2];
-
-        return __request('PUT', url, params, files);
-    }
-};
-
-},{"babel-runtime/core-js/object/keys":8,"babel-runtime/core-js/promise":10,"whatwg-fetch":124}],135:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3766,15 +3780,15 @@ var _transition = require('./transition');
 
 var _transition2 = _interopRequireDefault(_transition);
 
-var _routers = require('../routers');
+var _config = require('./config');
 
-var _routers2 = _interopRequireDefault(_routers);
+var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = {
-    start: function start() {
-        var AppRouter = Backbone.Router.extend((0, _extends3.default)({}, _routers2.default, {
+    start: function start(routers) {
+        var AppRouter = Backbone.Router.extend((0, _extends3.default)({}, routers, {
             nav: function nav(path, params, animation, trigger) {
                 if (trigger === undefined) {
                     trigger = true;
@@ -3790,12 +3804,18 @@ var router = {
 
         this.appRouter = new AppRouter();
 
-        Backbone.history.start({ pushState: true, root: '/' });
+        Backbone.history.start({ pushState: _config2.default.pushState, root: '/' });
+
+
+        return this;
     },
 
+    nav: function nav(path, params, animation, trigger) {
+        this.appRouter.nav(path, params, animation, trigger);
+    },
     fly: function fly(view, params) {
         params = params || {};
-        (0, _assign2.default)(params, this.appRouter.params);
+        (0, _assign2.default)(params, this.appRouter.params || {});
 
         _viewport2.default.fly(view, params);
         this.appRouter.params = null;
@@ -3804,7 +3824,7 @@ var router = {
 
 exports.default = router;
 
-},{"../routers":148,"./transition":140,"./viewport":141,"babel-runtime/core-js/object/assign":3,"babel-runtime/helpers/extends":15}],140:[function(require,module,exports){
+},{"./config":131,"./transition":140,"./viewport":141,"babel-runtime/core-js/object/assign":3,"babel-runtime/helpers/extends":15}],140:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4065,7 +4085,7 @@ var manager = {
 
 exports.default = manager;
 
-},{"./config":130,"./router":139,"./transition":140}],142:[function(require,module,exports){
+},{"./config":131,"./router":139,"./transition":140}],142:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4239,10 +4259,6 @@ var _confirm = require('../../common/widget/confirm');
 
 var _confirm2 = _interopRequireDefault(_confirm);
 
-var _viewport = require('../../framework/viewport');
-
-var _viewport2 = _interopRequireDefault(_viewport);
-
 var _config = require('../../framework/config');
 
 var _config2 = _interopRequireDefault(_config);
@@ -4401,7 +4417,7 @@ var Cart = function (_Component) {
             if (_config2.default.isActiveRouter) {
                 history.go(-1);
             } else {
-                _viewport2.default.pop();
+                APP.viewport.pop();
             }
         }
     }, {
@@ -4421,7 +4437,7 @@ var Cart = function (_Component) {
 
 exports.default = Cart;
 
-},{"../../common/cart-store":126,"../../common/widget/confirm":128,"../../framework/config":130,"../../framework/generic/component":131,"../../framework/handler":133,"../../framework/viewport":141,"./cart-item":142,"./index.html":143,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],145:[function(require,module,exports){
+},{"../../common/cart-store":126,"../../common/widget/confirm":129,"../../framework/config":131,"../../framework/generic/component":132,"../../framework/handler":134,"./cart-item":142,"./index.html":143,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],145:[function(require,module,exports){
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
@@ -4469,17 +4485,9 @@ var _component = require('../../framework/generic/component');
 
 var _component2 = _interopRequireDefault(_component);
 
-var _viewport = require('../../framework/viewport');
-
-var _viewport2 = _interopRequireDefault(_viewport);
-
 var _handler = require('../../framework/handler');
 
 var _handler2 = _interopRequireDefault(_handler);
-
-var _config = require('../../framework/config');
-
-var _config2 = _interopRequireDefault(_config);
 
 var _infinite = require('../../common/widget/infinite');
 
@@ -4496,10 +4504,6 @@ var _productItem2 = _interopRequireDefault(_productItem);
 var _cartOverlay = require('../../common/component/cart-overlay');
 
 var _cartOverlay2 = _interopRequireDefault(_cartOverlay);
-
-var _cart = require('../cart');
-
-var _cart2 = _interopRequireDefault(_cart);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4522,14 +4526,14 @@ var HomeView = function (_Component) {
             onDataReceived: _this.setup.bind(_this)
         });
 
-        _this.cartOverlay = new _cartOverlay2.default({ handler: _this.hander });
+        _this.cartOverlay = new _cartOverlay2.default();
         return _this;
     }
 
     (0, _createClass3.default)(HomeView, [{
         key: 'viewDidAppear',
         value: function viewDidAppear() {
-            _viewport2.default.index();
+            APP.viewport.index();
             this.cartOverlay.refresh();
         }
     }, {
@@ -4541,7 +4545,7 @@ var HomeView = function (_Component) {
 
             this.infinite.render(this.$el.find('.wrapper'));
 
-            this.cartOverlay.render(this.$el);
+            this.$el.append(this.cartOverlay.render().el);
             return this;
         }
     }, {
@@ -4583,15 +4587,6 @@ var HomeView = function (_Component) {
                         this.cartOverlay.refresh();
                         break;
                     }
-                case 2000:
-                    {
-                        if (_config2.default.isActiveRouter) {
-                            this.router.nav('cart');
-                        } else {
-                            _viewport2.default.fly(_cart2.default);
-                        }
-                        break;
-                    }
             }
         }
     }]);
@@ -4600,7 +4595,7 @@ var HomeView = function (_Component) {
 
 exports.default = HomeView;
 
-},{"../../common/component/cart-overlay":127,"../../common/widget/infinite":129,"../../framework/config":130,"../../framework/generic/component":131,"../../framework/handler":133,"../../framework/viewport":141,"../cart":144,"./index.html":145,"./product-item":147,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],147:[function(require,module,exports){
+},{"../../common/component/cart-overlay":127,"../../common/widget/infinite":130,"../../framework/generic/component":132,"../../framework/handler":134,"./index.html":145,"./product-item":147,"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/object/get-prototype-of":7,"babel-runtime/helpers/classCallCheck":13,"babel-runtime/helpers/createClass":14,"babel-runtime/helpers/get":16,"babel-runtime/helpers/inherits":17,"babel-runtime/helpers/possibleConstructorReturn":18}],147:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

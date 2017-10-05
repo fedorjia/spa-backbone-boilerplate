@@ -1,3 +1,4 @@
 export default {
-    isActiveRouter: true
+    isActiveRouter: true,
+    pushState: true
 };

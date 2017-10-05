@@ -1,14 +1,10 @@
 import Component from '../../framework/generic/component';
-import viewport from '../../framework/viewport';
 import Handler from '../../framework/handler';
-import config from '../../framework/config';
 
 import Infinite from '../../common/widget/infinite';
 import template from './index.html';
 import ProductItem from './product-item';
 import CartOverlay from '../../common/component/cart-overlay';
-import Cart from '../cart';
-
 
 class HomeView extends Component {
     // initialize() {
@@ -34,7 +30,7 @@ class HomeView extends Component {
         });
 
         // cart overaly
-        this.cartOverlay = new CartOverlay({handler: this.hander});
+        this.cartOverlay = new CartOverlay();
     }
 
     /**
@@ -42,7 +38,7 @@ class HomeView extends Component {
      */
     viewDidAppear() {
         // when home view did appear, remove all views from cahce except home view
-        viewport.index();
+        APP.viewport.index();
         this.cartOverlay.refresh();
     }
 
@@ -56,7 +52,7 @@ class HomeView extends Component {
         // render infinite
         this.infinite.render(this.$el.find('.wrapper'));
         // render cartOverlay
-        this.cartOverlay.render(this.$el);
+        this.$el.append(this.cartOverlay.render().el);
         return this;
     }
 
@@ -79,14 +75,6 @@ class HomeView extends Component {
             // refresh count
             case 1000: {
                 this.cartOverlay.refresh();
-                break;
-            }
-            case 2000: {
-                if(config.isActiveRouter) {
-                    this.router.nav('cart');
-                } else {
-                    viewport.fly(Cart);
-                }
                 break;
             }
         }

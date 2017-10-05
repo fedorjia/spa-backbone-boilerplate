@@ -1,4 +1,4 @@
-import http from '../../framework/http';
+import http from '../http';
 
 class Infinite {
     constructor(options) {
@@ -6,7 +6,7 @@ class Infinite {
             url: '',
             autoScroll: true,
             limit: 20,
-            delay: 500, // delay 500ms
+            delay: 280, // delay 500ms
             params: {},
             footerLoadingText: 'Loading...',
             footerMoreText: 'Load More',
@@ -97,7 +97,7 @@ class Infinite {
             // load next page
             setTimeout(() => {
                 this.load();
-            }, this.delay);
+            }, this.options.delay);
         }
     }
 }

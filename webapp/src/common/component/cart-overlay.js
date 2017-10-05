@@ -1,11 +1,14 @@
 // import template from '../tpl/component/cart-overlay.html';
+import config from '../../framework/config';
+import Cart from '../../page/cart';
+
 import cartStore from '../../common/cart-store';
 
 /***
  * Cart overlay view
  */
 class CartOverlay extends Backbone.View {
-    constructor(options) {
+    constructor() {
         super({
             className: 'cart-overlay',
             events: {
@@ -19,23 +22,16 @@ class CartOverlay extends Backbone.View {
 				<div class="badge"><%=count%></div>
 			</div>`
 		);
-
-        this.handler = options.handler;
     }
 
-    render($target) {
+    render() {
         super.render();
         // render view
         this.$el.html(this.template({ count: cartStore.count() }));
-        $target.append(this.$el);
         return this;
     }
 
-    refresh(item) {
-        this.updateCount();
-    }
-
-    updateCount() {
+    refresh() {
         const count = cartStore.count();
         const $count = this.$el.find('.badge');
         if(count > 9) {
@@ -46,7 +42,11 @@ class CartOverlay extends Backbone.View {
     }
 
     onClick() {
-        this.handler.send(2000);
+        if(config.isActiveRouter) {
+            APP.router.nav('cart');
+        } else {
+            APP.viewport.fly(Cart);
+        }
     }
 }
 

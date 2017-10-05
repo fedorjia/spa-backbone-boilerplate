@@ -828,6 +828,9 @@ a {
   line-height: 16px;
   font-size: 1rem;
 }
+.home-view .items {
+  margin-bottom: 0;
+}
 .home-view .items .item {
   padding-bottom: 0;
 }
@@ -837,6 +840,9 @@ a {
   margin-left: 4%;
   padding: 10px;
   background-color: #fff;
+}
+.home-view .items .product-item:last-child {
+  margin-bottom: 0;
 }
 .home-view .items .product-item .item-inner .thumbnail {
   position: relative;
