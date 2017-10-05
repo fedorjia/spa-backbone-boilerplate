@@ -44,7 +44,7 @@ module.exports = {
     browserifyScript(isWatch) {
         let bundler = browserify({
             transform: [babel.configure({
-                presets: ['stage-0'],
+                presets: ['latest', 'stage-2'],
 
             }), underscorify],
             cache: {},
