@@ -3,7 +3,7 @@ import 'whatwg-fetch';
 /**
  * URL path
  */
-function __createURL(url) {
+function _createURL(url) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
         return url;
     }
@@ -14,23 +14,19 @@ function __createURL(url) {
 /**
  * fetch
  */
-function __fetch(url, options) {
+function _fetch(url, options) {
     return fetch(url, options)
         .then((response) => {
             return response.json();
-        }).then((json) => {
-            return {data: json.result, __timestamp__: Date.now()};
-        }).catch((ex) => {
-            return Promise.reject({message: ex.message, __timestamp__: Date.now()});
         });
 }
 
 /**
  * request
  */
-function __request(method, url, params) {
+function _request(method, url, params) {
 	params = params || {};
-    url = __createURL(url);
+    url = _createURL(url);
 
     const header = {};
     const query = Object.keys(params).map((key) => {
@@ -52,14 +48,14 @@ function __request(method, url, params) {
         opts.body = query;
     }
 
-    return __fetch(url, opts);
+    return _fetch(url, opts);
 }
 
 /**
  * File upload
  */
-function __upload(method, url, params, files) {
-    url = __createURL(url);
+function _upload(method, url, params, files) {
+    url = _createURL(url);
     // form-data
     const formData = new FormData();
     for (let prop in params) {
@@ -73,7 +69,7 @@ function __upload(method, url, params, files) {
             formData.append(`${i}-${file.name}`, file);
         }
     }
-    return __fetch(url, {
+    return _fetch(url, {
         method: method,
         credentials: 'include',
         body: formData
@@ -88,34 +84,34 @@ export default {
      * GET
      */
     get(url, params = {}) {
-        return __request('GET', url, params);
+        return _request('GET', url, params);
     },
 
     /**
      * DELETE
      */
     delete(url, params = {}) {
-        return __request('DELETE', url, params);
+        return _request('DELETE', url, params);
     },
 
     /**
      * POST
      */
     post(url, params = {}) {
-        return __request('POST', url, params);
+        return _request('POST', url, params);
     },
 
     /**
      * UPLOAD
      */
     upload(url, params = {}, files) {
-        return __upload('POST', url, params, files);
+        return _upload('POST', url, params, files);
     },
 
     /**
      * PUT
      */
     put(url, params = {}, files) {
-        return __request('PUT', url, params, files);
+        return _request('PUT', url, params, files);
     }
 };

@@ -5,14 +5,18 @@ const settings = require('./settings');
 const app = express();
 const nunjucks = require('nunjucks');
 
+const router = require('./router');
 const ENV = process.env.NODE_ENV;
+
 
 let viewPath = path.resolve(__dirname, '../webapp/src');
 let staticPath = path.resolve(__dirname, '../webapp/src/static');
+
 if(ENV !== 'development') {
     staticPath = path.resolve(__dirname, '../webapp/dist/static');
     viewPath = path.resolve(__dirname, '../webapp/dist');
 }
+
 /*static*/
 app.use('/static', express.static(staticPath, {maxAge: settings.staticMaxAge}));
 
@@ -25,26 +29,13 @@ nunjucks.configure(viewPath, {
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 
-/* routers */
-app.get('/api/list', (req, res, next) => {
-    const skip = req.query.skip || 0;
-    const limit = req.query.limit || 10;
-    const remoteData = require('./list.json') || [];
-    let result = remoteData.filter((item) => {
-        return item.id > skip;
-    });
-
-    result = result.slice(0, limit);
-    res.json({success: true, result: result});
-});
-
-app.get('**', function(req, res) {
-    res.render('index.html');
-});
+/*router*/
+app.use(router);
 
 // app.use(function(req, res) { // html5 push state
 //     res.sendFile(__dirname + '/dist/index.html');
 // });
 
+/*start server*/
 app.listen(settings.port);
 util.log(settings['appname'] + ' runnng port:' + settings.port);

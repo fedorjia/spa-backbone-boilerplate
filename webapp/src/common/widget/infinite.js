@@ -18,7 +18,7 @@ class Infinite {
             throw new Error('must set url to infinite');
         }
 
-        this.skip = 0;
+        this.skip = null;
         this.isBusy = false;
         this.isCompleted = false;
         this.options = options;
@@ -60,25 +60,32 @@ class Infinite {
         this.loadMoreBar.loading();
         // http request api-data
         http.get(this.options.url, params)
-            .then((resp) => {
-                const items = resp.data;
-                if (items.length < this.options.limit) {
-                    // all data load completely
-                    this.loadMoreBar.hide();
-                    this.isCompleted = true;
+            .then((res) => {
+                if(res.status !== 200) {
+                    this.loadMoreBar.tip();
                 } else {
-                    this.loadMoreBar.reset();
-                    // set skip id for the next load
-                    this.skip = items[items.length-1].id;
-                }
-                // data notify
-                if (this.options.onDataReceived) {
-                    this.options.onDataReceived(items);
+                    const body = res.body;
+                    let items = [];
+                    if(body.pagination.after) {
+                        items = body.data;
+                        this.loadMoreBar.reset();
+                        // set skip for the next load
+                        this.skip = body.pagination.after;
+                    } else {
+                        // all data load completely
+                        this.loadMoreBar.hide();
+                        this.isCompleted = true;
+                    }
+
+                    // data notify
+                    if (this.options.onDataReceived) {
+                        this.options.onDataReceived(items);
+                    }
                 }
 
                 this.isBusy = false;
             })
-            .catch((err) => {
+            .catch(() => {
                 this.loadMoreBar.tip();
                 this.isBusy = false;
             });
