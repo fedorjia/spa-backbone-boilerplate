@@ -2,7 +2,6 @@
 
 const src = `webapp/src`;
 const dist = `webapp/dist`;
-const view = './server/view';
 
 module.exports = {
     name: 'app',
@@ -12,7 +11,7 @@ module.exports = {
      * entry of application
      */
     entry: {
-        style: `${src}/page/_style/app.styl`,
+        style: `${src}/view/_style/app.styl`,
         script: `${src}/app.js`
     },
 
@@ -52,11 +51,11 @@ module.exports = {
     alias: {
         'component': './webapp/src/framework/generic/component',
         'modal': './webapp/src/framework/generic/modal',
-        'handler': './webapp/src/page/_script/handler',
-        'http': './webapp/src/page/_script/http',
-        'util': './webapp/src/page/_script/util',
-        'alert': './webapp/src/page/_script/widget/alert',
-        'confirm': './webapp/src/page/_script/widget/confirm',
-        'infinite': './webapp/src/page/_script/widget/infinite',
+        'handler': './webapp/src/view/_script/handler',
+        'http': './webapp/src/view/_script/http',
+        'util': './webapp/src/view/_script/util',
+        'alert': './webapp/src/view/_script/widget/alert',
+        'confirm': './webapp/src/view/_script/widget/confirm',
+        'infinite': './webapp/src/view/_script/widget/infinite',
     }
 };
