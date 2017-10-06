@@ -51,11 +51,11 @@ module.exports = {
     alias: {
         'component': './webapp/src/framework/generic/component',
         'modal': './webapp/src/framework/generic/modal',
-        'handler': './webapp/src/view/_script/handler',
-        'http': './webapp/src/view/_script/http',
-        'util': './webapp/src/view/_script/util',
-        'alert': './webapp/src/view/_script/widget/alert',
-        'confirm': './webapp/src/view/_script/widget/confirm',
-        'infinite': './webapp/src/view/_script/widget/infinite',
+        'handler': './webapp/src/script/handler',
+        'http': './webapp/src/script/http',
+        'util': './webapp/src/script/util',
+        'alert': './webapp/src/script/widget/alert',
+        'confirm': './webapp/src/script/widget/confirm',
+        'infinite': './webapp/src/script/widget/infinite',
     }
 };
