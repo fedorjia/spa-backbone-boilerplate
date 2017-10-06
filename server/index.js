@@ -7,15 +7,17 @@ const nunjucks = require('nunjucks');
 
 const ENV = process.env.NODE_ENV;
 
-/*static path*/
+let viewPath = path.resolve(__dirname, '../webapp/src');
 let staticPath = path.resolve(__dirname, '../webapp/src/static');
 if(ENV !== 'development') {
-    staticPath = path.resolve(__dirname, '../webapp/dist');
+    staticPath = path.resolve(__dirname, '../webapp/dist/static');
+    viewPath = path.resolve(__dirname, '../webapp/dist');
 }
+/*static*/
 app.use('/static', express.static(staticPath, {maxAge: settings.staticMaxAge}));
 
 /*template engine*/
-nunjucks.configure('./server/view', {
+nunjucks.configure(viewPath, {
     autoescape: true,
     noCache: ENV === 'development',
     express: app
@@ -36,7 +38,7 @@ app.get('/api/list', (req, res, next) => {
     res.json({success: true, result: result});
 });
 
-app.get('/*', function(req, res) {
+app.get('**', function(req, res) {
     res.render('index.html');
 });
 

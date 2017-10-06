@@ -27,7 +27,12 @@ module.exports = {
         script: `${src}/static/bundle`
     },
 
-    dist: dist,
+    dist: {
+        root: dist,
+        static: `${dist}/static`,
+        style: `${dist}/static/bundle`,
+        script: `${dist}/static/bundle`
+    },
 
 	core: {
 		name: 'core',

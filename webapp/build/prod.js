@@ -25,7 +25,7 @@ const collectorTask = 'collector-build';
 
 /** clean **/
 gulp.task(cleanTask, () => {
-    rm('-rf', conf.dist);
+    rm('-rf', conf.dist.root);
 });
 
 
@@ -60,16 +60,16 @@ gulp.task(revAssetTask, () => {
     return gulp.src(`${conf.src.static}/**/*`)
         .pipe(rev())
         .pipe(revCss())
-        .pipe(gulp.dest(`${conf.dist}`))
+        .pipe(gulp.dest(`${conf.dist.static}`))
         .pipe(rev.manifest())
-        .pipe(gulp.dest(`${conf.dist}`))
+        .pipe(gulp.dest(`${conf.dist.root}`))
 });
 
 /**
  * collector
  */
 gulp.task(collectorTask, () => {
-    return gulp.src([`${conf.dist}/*.json`, `${conf.src.root}/*.html`])
+    return gulp.src([`${conf.dist.root}/*.json`, `${conf.src.root}/*.html`])
         .pipe(revCollector({
             // replaceReved: true,
             // dirReplacements: {
@@ -79,7 +79,7 @@ gulp.task(collectorTask, () => {
             //     }
             // }
         }))
-        .pipe(gulp.dest(conf.view.path));
+        .pipe(gulp.dest(conf.dist.root));
 });
 
 
