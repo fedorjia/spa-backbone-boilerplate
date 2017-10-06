@@ -2,7 +2,7 @@
 import config from '../../framework/config';
 import Cart from '../../page/cart';
 
-import cartStore from '../../common/cart-store';
+import cartStore from '..//cart-store';
 
 /***
  * Cart overlay view
