@@ -4,7 +4,7 @@ import Infinite from 'infinite';
 
 import template from './index.html';
 import ProductItem from './product-item';
-import CartOverlay from '../../script/component/cart-overlay';
+import CartOverlay from '../_script/component/cart-overlay';
 
 class HomeView extends Component {
     // initialize() {

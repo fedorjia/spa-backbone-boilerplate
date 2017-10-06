@@ -1,6 +1,6 @@
 // import template from '../tpl/component/cart-overlay.html';
-import config from '../../framework/config';
-import Cart from '../../page/cart';
+import config from '../../../framework/config';
+import Cart from '../../cart/index';
 
 import cartStore from '..//cart-store';
 

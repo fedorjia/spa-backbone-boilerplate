@@ -12,7 +12,7 @@ module.exports = {
      * entry of application
      */
     entry: {
-        style: `${src}/style/app.styl`,
+        style: `${src}/page/_style/app.styl`,
         script: `${src}/app.js`
     },
 
@@ -52,11 +52,11 @@ module.exports = {
     alias: {
         'component': './webapp/src/framework/generic/component',
         'modal': './webapp/src/framework/generic/modal',
-        'handler': './webapp/src/script/handler',
-        'http': './webapp/src/script/http',
-        'util': './webapp/src/script/util',
-        'alert': './webapp/src/script/widget/alert',
-        'confirm': './webapp/src/script/widget/confirm',
-        'infinite': './webapp/src/script/widget/infinite',
+        'handler': './webapp/src/page/_script/handler',
+        'http': './webapp/src/page/_script/http',
+        'util': './webapp/src/page/_script/util',
+        'alert': './webapp/src/page/_script/widget/alert',
+        'confirm': './webapp/src/page/_script/widget/confirm',
+        'infinite': './webapp/src/page/_script/widget/infinite',
     }
 };

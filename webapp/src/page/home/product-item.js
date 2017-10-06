@@ -1,5 +1,5 @@
 // import template from './product-item.html';
-import cartStore from '../../script/cart-store';
+import cartStore from '../_script/cart-store';
 
 class ProductItem extends Backbone.View {
     constructor(data, handler) {
