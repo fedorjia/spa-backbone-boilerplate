@@ -25,13 +25,13 @@ const collectorTask = 'collector-build';
 
 /** clean **/
 gulp.task(cleanTask, () => {
-    rm('-rf', conf.dist.root);
+    rm('-rf', conf.out.root);
 });
 
 
 /** core **/
 gulp.task(coreTask, () => {
-    return utils.concatScript(conf.core.items, conf.core.name)
+    return utils.concatScript(conf.common.items, conf.common.name)
         .pipe(streamify(uglify()))
         .pipe(size())
         .pipe(gulp.dest(`${conf.src.script}`));
@@ -60,16 +60,16 @@ gulp.task(revAssetTask, () => {
     return gulp.src(`${conf.src.static}/**/*`)
         .pipe(rev())
         .pipe(revCss())
-        .pipe(gulp.dest(`${conf.dist.static}`))
+        .pipe(gulp.dest(`${conf.out.static}`))
         .pipe(rev.manifest())
-        .pipe(gulp.dest(`${conf.dist.root}`))
+        .pipe(gulp.dest(`${conf.out.root}`))
 });
 
 /**
  * collector
  */
 gulp.task(collectorTask, () => {
-    return gulp.src([`${conf.dist.root}/*.json`, `${conf.src.root}/*.html`])
+    return gulp.src([`${conf.out.root}/*.json`, `${conf.src.root}/*.html`])
         .pipe(revCollector({
             // replaceReved: true,
             // dirReplacements: {
@@ -79,7 +79,7 @@ gulp.task(collectorTask, () => {
             //     }
             // }
         }))
-        .pipe(gulp.dest(conf.dist.root));
+        .pipe(gulp.dest(conf.out.root));
 });
 
 

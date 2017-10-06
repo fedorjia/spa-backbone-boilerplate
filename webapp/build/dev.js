@@ -15,7 +15,7 @@ const scriptTask = 'script-dev';
 
 /** core **/
 gulp.task(coreTask, () => {
-	return utils.concatScript(conf.core.items, conf.core.name);
+	return utils.concatScript(conf.common.items, conf.common.name);
 });
 
 /** style **/

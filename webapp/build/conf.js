@@ -6,14 +6,19 @@ const view = './server/view';
 
 module.exports = {
     name: 'app',
-    staticPrefix: 'static',
-    proxy: 'localhost:3200',
+    proxy: 'localhost:3200', // browser sync proxy
 
+    /**
+     * entry of application
+     */
     entry: {
         style: `${src}/style/app.styl`,
         script: `${src}/app.js`
     },
 
+    /**
+     * src paths
+     */
     src: {
         root: src,
         static: `${src}/static`,
@@ -21,12 +26,18 @@ module.exports = {
         script: `${src}/static/bundle`
     },
 
-    dist: {
+    /**
+     * output paths
+     */
+    out: {
         root: dist,
         static: `${dist}/static`
     },
 
-	core: {
+    /**
+     * common chunks
+     */
+	common: {
 		name: 'core',
 		items: [
             // `./webapp/src/static/vendor/jquery.min.js`,
@@ -35,6 +46,9 @@ module.exports = {
 		]
 	},
 
+    /**
+     * alias component
+     */
     alias: {
         'component': './webapp/src/framework/generic/component',
         'modal': './webapp/src/framework/generic/modal',
