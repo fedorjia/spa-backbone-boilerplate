@@ -9,12 +9,6 @@ module.exports = {
     staticPrefix: 'static',
     proxy: 'localhost:3200',
 
-    view: {
-        path: view,
-        template: `./webapp/src/index.html`,
-        index: `${view}/index.html`,
-    },
-
     entry: {
         style: `${src}/style/app.styl`,
         script: `${src}/app.js`
@@ -29,9 +23,7 @@ module.exports = {
 
     dist: {
         root: dist,
-        static: `${dist}/static`,
-        style: `${dist}/static/bundle`,
-        script: `${dist}/static/bundle`
+        static: `${dist}/static`
     },
 
 	core: {
@@ -41,5 +33,16 @@ module.exports = {
 			`./webapp/src/static/vendor/backscore.min.js`,
 			`./webapp/src/static/vendor/velocity.all.min.js`
 		]
-	}
+	},
+
+    alias: {
+        'component': './webapp/src/framework/generic/component',
+        'modal': './webapp/src/framework/generic/modal',
+        'handler': './webapp/src/common/handler',
+        'http': './webapp/src/common/http',
+        'util': './webapp/src/common/util',
+        'alert': './webapp/src/common/widget/alert',
+        'confirm': './webapp/src/common/widget/confirm',
+        'infinite': './webapp/src/common/widget/infinite',
+    }
 };

@@ -44,18 +44,27 @@ module.exports = {
     browserifyScript(isWatch) {
         let bundler = browserify({
             transform: [babel.configure({
-                presets: ['latest', 'stage-2'],
-
+                presets: ['latest', 'stage-2']
             }), underscorify],
             cache: {},
             packageCache: {},
             fullPaths: false
         });
 
+        if(conf.alias) {
+            // alias module
+            for(let prop in conf.alias) {
+                if(conf.alias.hasOwnProperty(prop)) {
+                    bundler.require([conf.alias[prop]], {expose: prop});
+                }
+            }
+        }
+
         function __rebundle() {
             // b.transform(underscorify)
             return bundler.bundle()
                 .on('error', (err) => {
+                    console.log(err.message);
                     notifier.notify({ message: 'Error: ' + err.message });
                 })
                 .pipe(source(conf.name + '.js'))

@@ -1,6 +1,6 @@
 'use strict';
 require('shelljs/global');
-const sequence = require('gulp-sequence');
+// const sequence = require('gulp-sequence');
 const gulp = require('gulp');
 const utils = require('./utils');
 const conf = require('./conf');
@@ -8,14 +8,10 @@ const conf = require('./conf');
 global.browserSync = require('browser-sync').create();
 
 const mainTask = 'main-dev';
-const copyTask = 'copy-dev';
 const coreTask = 'core-dev';
 const styleTask = 'style-dev';
 const scriptTask = 'script-dev';
 
-gulp.task(copyTask, () => {
-    cp('-R', conf.view.template, conf.view.index); // move index page
-});
 
 /** core **/
 gulp.task(coreTask, () => {
@@ -34,15 +30,13 @@ gulp.task(scriptTask, () => {
 });
 
 /** main **/
-gulp.task(mainTask, () => {
-    sequence(copyTask, [styleTask, coreTask, scriptTask], () => {
-        // watch stylus
-        gulp.watch(conf.src.root + '/**/*.styl', [styleTask]);
+gulp.task(mainTask, [styleTask, coreTask, scriptTask], () => {
+    // watch stylus
+    gulp.watch(conf.src.root + '/**/*.styl', [styleTask]);
 
-        // start browserSync server
-        browserSync.init({
-            proxy: conf.proxy
-        });
+    // start browserSync server
+    browserSync.init({
+        proxy: conf.proxy
     });
 });
 

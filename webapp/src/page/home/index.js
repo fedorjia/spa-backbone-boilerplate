@@ -1,7 +1,7 @@
-import Component from '../../framework/generic/component';
-import Handler from '../../framework/handler';
+import Component from 'component';
+import Handler from 'handler';
+import Infinite from 'infinite';
 
-import Infinite from '../../common/widget/infinite';
 import template from './index.html';
 import ProductItem from './product-item';
 import CartOverlay from '../../common/component/cart-overlay';
