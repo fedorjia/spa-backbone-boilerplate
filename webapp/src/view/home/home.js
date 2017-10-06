@@ -2,7 +2,7 @@ import Component from 'component';
 import Handler from 'handler';
 import Infinite from 'infinite';
 
-import template from './index.html';
+import template from './home.html';
 import ProductItem from './product-item';
 import CartOverlay from '../_script/component/cart-overlay';
 

@@ -1,7 +1,7 @@
 import config from '../../framework/config';
 import Component from 'component';
 import Handler from 'handler';
-import template from './index.html';
+import template from './cart.html';
 import cartStore from '../_script/cart-store';
 import CartItem from './cart-item';
 // import Alert from 'alert';
