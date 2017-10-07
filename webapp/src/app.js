@@ -4,7 +4,7 @@ import viewport from './framework/viewport';
 import router from './framework/router';
 import config from './framework/config';
 
-import Home from './view/home/home';
+import Home from './view/home';
 import routers from './routers';
 
 window.APP = {};
