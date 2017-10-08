@@ -36,7 +36,8 @@ gulp.task(mainTask, [styleTask, coreTask, scriptTask], () => {
 
     // start browserSync server
     browserSync.init({
-        proxy: conf.proxy
+        proxy: conf.proxy,
+        open: false
     });
 });
 

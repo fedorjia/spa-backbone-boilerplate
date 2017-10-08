@@ -21,6 +21,7 @@
 1. develop your app
 
 	* `npm run dev`
+	* visit `http://localhost:3000`
 
 2. product your app
 
