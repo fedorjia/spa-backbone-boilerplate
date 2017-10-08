@@ -43,6 +43,7 @@ module.exports = {
      */
     browserifyScript(isWatch) {
         let bundler = browserify({
+            paths: [conf.src.root], // base path for module finding
             transform: [babel.configure({
                 presets: ['latest', 'stage-2']
             }), underscorify],

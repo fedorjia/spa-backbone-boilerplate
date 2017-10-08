@@ -1,11 +1,11 @@
-import config from '../../framework/config';
+import config from 'framework/config';
 import Component from 'component';
-import Handler from 'handler';
+import Handler from 'script/handler';
 import template from './cart.html';
-import cartStore from '../../script/cart-store';
+import cartStore from 'script/cart-store';
 import CartItem from './cart-item';
 // import Alert from 'alert';
-import Confirm from 'confirm';
+import Confirm from 'script/widget/confirm';
 
 class Cart extends Component {
 

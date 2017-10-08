@@ -50,12 +50,6 @@ module.exports = {
      */
     alias: {
         'component': './webapp/src/framework/generic/component',
-        'modal': './webapp/src/framework/generic/modal',
-        'handler': './webapp/src/script/handler',
-        'http': './webapp/src/script/http',
-        'util': './webapp/src/script/util',
-        'alert': './webapp/src/script/widget/alert',
-        'confirm': './webapp/src/script/widget/confirm',
-        'infinite': './webapp/src/script/widget/infinite',
+        'modal': './webapp/src/framework/generic/modal'
     }
 };

@@ -6,7 +6,8 @@
     "scripts": {
         "dev-server": "cross-env NODE_ENV=development nodemon --watch ./server ./server/index.js",
         "dev": "npm run dev-server & gulp dev",
-        "prod": "cross-env NODE_ENV=production gulp prod"
+        "prod": "cross-env NODE_ENV=production gulp prod",
+        "prod:start": "npm run prod && node server"
     },
     "repository": {
         "type": "git",

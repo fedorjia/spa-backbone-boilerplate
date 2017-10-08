@@ -1,6 +1,6 @@
 import Component from 'component';
-import Handler from 'handler';
-import Infinite from 'infinite';
+import Handler from 'script/handler';
+import Infinite from 'script/widget/infinite';
 
 import template from './home.html';
 import ProductItem from './product-item';
