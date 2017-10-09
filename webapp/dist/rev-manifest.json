@@ -1,7 +1,7 @@
 {
   "bundle/app.css": "bundle/app-64272c3b8a.css",
   "bundle/app.js": "bundle/app-bbe76cd5ea.js",
-  "bundle/core.js": "bundle/core-8d52eceb3c.js",
+  "bundle/core.js": "bundle/core-bc97b50da0.js",
   "font/iconfont.css": "font/iconfont-90986331ab.css",
   "font/iconfont.eot": "font/iconfont-a90ae9c687.eot",
   "font/iconfont.js": "font/iconfont-2551113e32.js",
@@ -11,7 +11,8 @@
   "image/avatar.jpg": "image/avatar-7895c15b03.jpg",
   "image/favicon.ico": "image/favicon-fdcbbb94c6.ico",
   "vendor/babel-polyfill.min.js": "vendor/babel-polyfill.min-6e9e5395ac.js",
-  "vendor/backscore.min.js": "vendor/backscore.min-0c99a140e9.js",
-  "vendor/jquery.min.js": "vendor/jquery.min-f7676b1648.js",
-  "vendor/velocity.all.min.js": "vendor/velocity.all.min-9998e88b9d.js"
+  "vendor/backbone.min.js": "vendor/backbone.min-387d0f19e2.js",
+  "vendor/underscore.min.js": "vendor/underscore.min-6a3a434a13.js",
+  "vendor/velocity.all.min.js": "vendor/velocity.all.min-4b982a40fd.js",
+  "vendor/zepto.min.js": "vendor/zepto.min-a685f0d603.js"
 }

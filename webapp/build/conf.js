@@ -39,8 +39,9 @@ module.exports = {
 	common: {
 		name: 'core',
 		items: [
-            // `./webapp/src/static/vendor/jquery.min.js`,
-			`./webapp/src/static/vendor/backscore.min.js`,
+            `./webapp/src/static/vendor/zepto.min.js`,
+			`./webapp/src/static/vendor/underscore.min.js`,
+            `./webapp/src/static/vendor/backbone.min.js`,
 			`./webapp/src/static/vendor/velocity.all.min.js`
 		]
 	},

@@ -65,16 +65,15 @@ class Infinite {
                     this.loadMoreBar.tip();
                 } else {
                     const body = res.body;
-                    let items = [];
-                    if(body.pagination.after) {
-                        items = body.data;
-                        this.loadMoreBar.reset();
-                        // set skip for the next load
-                        this.skip = body.pagination.after;
-                    } else {
+                    const items = body.data;
+                    if(!body.pagination.after || items.length < this.options.limit) {
                         // all data load completely
                         this.loadMoreBar.hide();
                         this.isCompleted = true;
+                    } else {
+                        this.loadMoreBar.reset();
+                        // set skip for the next load
+                        this.skip = body.pagination.after;
                     }
 
                     // data notify
