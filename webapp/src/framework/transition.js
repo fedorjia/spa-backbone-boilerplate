@@ -1,3 +1,4 @@
+import config from './config';
 import NoneTransition from './plugin/transition/NoneTransition';
 import FadeTransition from './plugin/transition/FadeTransition';
 import SlideHorizontalTransition from './plugin/transition/SlideHorizontalTransition';
@@ -8,7 +9,7 @@ import SlideVerticalTransition from './plugin/transition/SlideVerticalTransition
  */
 const transition = {
 
-	defaultAnimation: 'none', // none, fade, slide-h, slide-v
+	defaultAnimation: config.defaultAnimation, // none, fade, slide-h, slide-v
 
 	get(currentView, targetView, animation) {
 		let result;

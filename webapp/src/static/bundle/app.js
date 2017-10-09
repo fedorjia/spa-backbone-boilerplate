@@ -1965,15 +1965,15 @@ $(function () {
 }());
 
 },{"./routers":115,"./view/home":126,"framework/config":107,"framework/router":112,"framework/viewport":114}],107:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = {
     isActiveRouter: true,
-    pushState: true
-};
+    pushState: true,
+    defaultAnimation: 'none' };
 
 },{}],108:[function(require,module,exports){
 'use strict';
@@ -2316,6 +2316,10 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _config = require('./config');
+
+var _config2 = _interopRequireDefault(_config);
+
 var _NoneTransition = require('./plugin/transition/NoneTransition');
 
 var _NoneTransition2 = _interopRequireDefault(_NoneTransition);
@@ -2336,7 +2340,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var transition = {
 
-	defaultAnimation: 'none', get: function get(currentView, targetView, animation) {
+	defaultAnimation: _config2.default.defaultAnimation, get: function get(currentView, targetView, animation) {
 		var result = void 0;
 
 		var animationType = animation;
@@ -2372,7 +2376,7 @@ var transition = {
 
 exports.default = transition;
 
-},{"./plugin/transition/FadeTransition":108,"./plugin/transition/NoneTransition":109,"./plugin/transition/SlideHorizontalTransition":110,"./plugin/transition/SlideVerticalTransition":111}],114:[function(require,module,exports){
+},{"./config":107,"./plugin/transition/FadeTransition":108,"./plugin/transition/NoneTransition":109,"./plugin/transition/SlideHorizontalTransition":110,"./plugin/transition/SlideVerticalTransition":111}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

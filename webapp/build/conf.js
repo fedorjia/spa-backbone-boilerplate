@@ -11,7 +11,7 @@ module.exports = {
      * entry of application
      */
     entry: {
-        style: `${src}/view/_style/app.styl`,
+        style: `${src}/style/app.styl`,
         script: `${src}/app.js`
     },
 
