@@ -45,7 +45,14 @@ module.exports = {
         let bundler = browserify({
             paths: [conf.src.root], // base path for module finding
             transform: [babel.configure({
-                presets: ['latest', 'stage-2']
+                presets: [
+                    ["env", {
+                        "useBuiltIns": true,
+                        "targets": {
+                            "browsers": "> 5%"
+                        }
+                    }]
+                ]
             }), underscorify],
             cache: {},
             packageCache: {},
