@@ -1,3 +1,5 @@
+import { slideRightIn, slideLeftIn, fadeOut } from '../../anime';
+
 /***
  * SlideHorizontalTransition
  */
@@ -15,43 +17,32 @@ class SlideHorizontalTransition {
     push(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
+            fadeOut(this.currentView.$el.get(0), {
+                duration: SlideHorizontalTransition.duration + 120
+            });
         }
-
-        const delay = this.currentView ? SlideHorizontalTransition.duration/4 : 0;
 
         // target view
         this.targetView.render();
-
-        this.targetView.$el.velocity('transition.slideRightIn', {
-            delay: delay,
+        slideRightIn(this.targetView.$el.get(0), {
             duration: SlideHorizontalTransition.duration,
-            complete: () => {
-                if(callback) {
-                    callback();
-                }
-            }
-        });
+            complete: callback
+        })
     }
 
     pop(callback) {
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('fadeOut', SlideHorizontalTransition.duration);
+            fadeOut(this.currentView.$el.get(0), {
+                duration: SlideHorizontalTransition.duration + 120
+            });
         }
 
-        const delay = this.currentView ? SlideHorizontalTransition.duration/4 : 0;
-
         // target view
-        this.targetView.$el.velocity('transition.slideLeftIn', {
-            delay: delay,
+        slideLeftIn(this.targetView.$el.get(0), {
             duration: SlideHorizontalTransition.duration,
-            complete: () => {
-                if(callback) {
-                    callback();
-                }
-            }
-        });
+            complete: callback
+        })
     }
 }
 

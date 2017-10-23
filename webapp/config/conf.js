@@ -42,7 +42,7 @@ module.exports = {
             `./webapp/src/static/vendor/zepto.min.js`,
 			`./webapp/src/static/vendor/underscore.min.js`,
             `./webapp/src/static/vendor/backbone.min.js`,
-			`./webapp/src/static/vendor/velocity.all.min.js`
+			`./webapp/src/static/vendor/anime.min.js`
 		]
 	},
 

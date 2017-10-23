@@ -1,7 +1,7 @@
 {
-  "bundle/app.css": "bundle/app-64272c3b8a.css",
-  "bundle/app.js": "bundle/app-bbe76cd5ea.js",
-  "bundle/core.js": "bundle/core-bc97b50da0.js",
+  "bundle/app.css": "bundle/app-06883cbd65.css",
+  "bundle/app.js": "bundle/app-9434728a39.js",
+  "bundle/core.js": "bundle/core-9abca8a5a7.js",
   "font/iconfont.css": "font/iconfont-90986331ab.css",
   "font/iconfont.eot": "font/iconfont-a90ae9c687.eot",
   "font/iconfont.js": "font/iconfont-2551113e32.js",
@@ -10,9 +10,9 @@
   "font/iconfont.woff": "font/iconfont-4ced6ebc6a.woff",
   "image/avatar.jpg": "image/avatar-7895c15b03.jpg",
   "image/favicon.ico": "image/favicon-fdcbbb94c6.ico",
+  "vendor/anime.min.js": "vendor/anime.min-b00a2fe966.js",
   "vendor/babel-polyfill.min.js": "vendor/babel-polyfill.min-6e9e5395ac.js",
   "vendor/backbone.min.js": "vendor/backbone.min-387d0f19e2.js",
   "vendor/underscore.min.js": "vendor/underscore.min-6a3a434a13.js",
-  "vendor/velocity.all.min.js": "vendor/velocity.all.min-4b982a40fd.js",
   "vendor/zepto.min.js": "vendor/zepto.min-a685f0d603.js"
 }

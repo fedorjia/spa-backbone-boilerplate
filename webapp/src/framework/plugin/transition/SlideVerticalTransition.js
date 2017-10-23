@@ -1,3 +1,5 @@
+import { slideUpIn, slideDownOut } from '../../anime';
+
 /***
  * SlideVerticalTransition
  */
@@ -13,13 +15,10 @@ class SlideVerticalTransition {
     }
 
     push(callback) {
-        const delay = this.currentView ? SlideVerticalTransition.duration/4 : 0;
-
         // target view
         this.targetView.render();
 
-        this.targetView.$el.velocity('transition.slideUpIn', {
-            delay: delay,
+        slideUpIn(this.targetView.$el.get(0), {
             duration: SlideVerticalTransition.duration,
             complete: () => {
                 // current view
@@ -34,19 +33,13 @@ class SlideVerticalTransition {
     }
 
     pop(callback) {
-        const delay = this.currentView ? SlideVerticalTransition.duration/4 : 0;
         this.targetView.$el.css({ opacity: 1, display: 'block' });
 
         // current view
         if(this.currentView) {
-            this.currentView.$el.velocity('transition.slideDownOut', {
-                delay: delay,
+            slideDownOut(this.currentView.$el.get(0), {
                 duration: SlideVerticalTransition.duration,
-                complete: () => {
-                    if(callback) {
-                        callback();
-                    }
-                }
+                complete: callback
             });
         }
     }
