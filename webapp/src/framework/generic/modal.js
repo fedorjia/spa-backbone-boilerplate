@@ -1,3 +1,4 @@
+import { fadeIn, fadeOut } from '../anime';
 import viewport from '../viewport';
 /***
  * Generic Modal
@@ -51,8 +52,12 @@ class Modal extends Backbone.View {
             this.$el.css({opacity: 1});
             this.didAppear();
         } else {
-            this.$el.velocity(this.options.animation, this.options.duration, () => {
-                this.didAppear();
+            this.$el.css({ display: 'block' });
+            fadeIn(this.$el.get(0), {
+                duration: this.options.duration,
+                complete: () => {
+                    this.didAppear();
+                }
             });
         }
 
@@ -64,8 +69,12 @@ class Modal extends Backbone.View {
             return;
         }
         this.willDisappear();
-        this.$el.velocity('fadeOut', this.options.duration, () => {
-            this.$el.remove();
+
+        fadeOut(this.$el.get(0), {
+            duration: this.options.duration,
+            complete: () => {
+                this.$el.remove();
+            }
         });
 
         viewport.setActiveModal(null);
