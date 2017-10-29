@@ -1,4 +1,4 @@
-import http from '../http';
+import http from 'generic/fetch';
 
 class Infinite {
     constructor(options) {

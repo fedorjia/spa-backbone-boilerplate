@@ -1,4 +1,3 @@
-'use strict';
 require('shelljs/global');
 // const sequence = require('gulp-sequence');
 const gulp = require('gulp');
@@ -7,32 +6,28 @@ const conf = require('./conf');
 
 global.browserSync = require('browser-sync').create();
 
-const mainTask = 'main-dev';
-const coreTask = 'core-dev';
-const styleTask = 'style-dev';
-const scriptTask = 'script-dev';
-
 
 /** core **/
-gulp.task(coreTask, () => {
-	return utils.concatScript(conf.common.items, conf.common.name);
+gulp.task('dev-core', () => {
+	return utils.concatScript(conf.common.items, conf.common.name, `${conf.src}/static/bundle`);
 });
 
 /** style **/
-gulp.task(styleTask, () => {
-	return utils.compileStyle(conf.entry.style, conf.name)
+gulp.task('dev-style', () => {
+	return utils.compileStyle(conf.entry.style, conf.name, `${conf.src}/static/bundle`)
         .pipe(browserSync.reload({stream: true}));
 });
 
 /** script **/
-gulp.task(scriptTask, () => {
-	return utils.browserifyScript(true);
+gulp.task('dev-script', () => {
+	return utils.browserifyScript(true, conf.entry.script, `${conf.src}/static/bundle`);
 });
 
 /** main **/
-gulp.task(mainTask, [styleTask, coreTask, scriptTask], () => {
+const main = 'dev-main';
+gulp.task(main, [ 'dev-core', 'dev-style', 'dev-script' ], () => {
     // watch stylus
-    gulp.watch(conf.src.root + '/**/*.styl', [styleTask]);
+    gulp.watch(conf.src + '/**/*.styl', [ 'dev-style' ]);
 
     // start browserSync server
     browserSync.init({
@@ -41,4 +36,4 @@ gulp.task(mainTask, [styleTask, coreTask, scriptTask], () => {
     });
 });
 
-exports.task = mainTask;
+exports.task = main;

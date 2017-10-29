@@ -1,4 +1,4 @@
-import Modal from 'modal';
+import Modal from 'framework/modal';
 // import template from '../tpl/widget/confirm.html';
 
 export default {

@@ -4,8 +4,8 @@
     "description": "single page mobile application boilerplate with backbone",
     "main": "index.js",
     "scripts": {
-        "dev-server": "cross-env NODE_ENV=development nodemon --watch ./server ./server/index.js",
-        "dev": "npm run dev-server & gulp dev",
+        "server": "cross-env NODE_ENV=development nodemon --watch ./server ./server/index.js",
+        "dev": "npm run server & gulp dev",
         "prod": "cross-env NODE_ENV=production gulp prod",
         "prod:start": "npm run prod && node server"
     },
@@ -38,7 +38,6 @@
         "gulp-rev": "^8.0.0",
         "gulp-rev-collector": "^1.2.2",
         "gulp-rev-css-url": "^0.1.0",
-        "gulp-sequence": "^0.4.6",
         "gulp-size": "^2.1.0",
         "gulp-streamify": "^1.0.2",
         "gulp-stylus": "^2.6.0",
@@ -46,6 +45,8 @@
         "gulp-util": "^3.0.7",
         "node-notifier": "^5.1.2",
         "node-underscorify": "0.0.14",
+        "remapify": "^2.1.0",
+        "run-sequence": "^2.2.0",
         "shelljs": "^0.7.4",
         "vinyl-buffer": "^1.0.0",
         "vinyl-source-stream": "^1.1.0",

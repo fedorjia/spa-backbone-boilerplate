@@ -1,5 +1,5 @@
-import { fadeIn, fadeOut } from '../anime';
-import viewport from '../viewport';
+import { fadeIn, fadeOut } from './anime';
+import viewport from './viewport';
 /***
  * Generic Modal
  */

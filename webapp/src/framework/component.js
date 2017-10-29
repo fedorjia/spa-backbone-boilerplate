@@ -6,7 +6,7 @@ class Component extends Backbone.View {
 	/***** lifecycle ****/
 
 	render() {
-		this.$el.addClass('view');
+		this.$el.addClass('layout');
 		$('body').append(this.$el);
 		return this;
 	}

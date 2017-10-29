@@ -1,8 +1,8 @@
 // import template from '../tpl/component/cart-overlay.html';
-import config from '../../framework/config';
-import Cart from '../../view/cart';
+import config from 'framework/config';
+import Cart from '../../container/cart';
 
-import cartStore from '..//cart-store';
+import cartStore from 'generic/cart-store';
 
 /***
  * Cart overlay view
@@ -49,5 +49,4 @@ class CartOverlay extends Backbone.View {
         }
     }
 }
-
 export default CartOverlay;

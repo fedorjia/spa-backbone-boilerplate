@@ -7,31 +7,35 @@ module.exports = {
     name: 'app',
     proxy: 'localhost:3200', // browser sync proxy
 
+    src,
+
+    dist,
+
     /**
      * entry of application
      */
     entry: {
-        style: `${src}/style/app.styl`,
+        style: `${src}/app.styl`,
         script: `${src}/app.js`
     },
 
-    /**
-     * src paths
-     */
-    src: {
-        root: src,
-        static: `${src}/static`,
-        style: `${src}/static/bundle`,
-        script: `${src}/static/bundle`
-    },
-
-    /**
-     * output paths
-     */
-    out: {
-        root: dist,
-        static: `${dist}/static`
-    },
+    // /**
+    //  * src paths
+    //  */
+    // src: {
+    //     root: src,
+    //     static: `${src}/static`,
+    //     style: `${src}/static/bundle`,
+    //     script: `${src}/static/bundle`
+    // },
+	//
+    // /**
+    //  * output paths
+    //  */
+    // out: {
+    //     root: dist,
+    //     static: `${dist}/static`
+    // },
 
     /**
      * common chunks
@@ -50,7 +54,9 @@ module.exports = {
      * alias component
      */
     alias: {
-        'component': './webapp/src/framework/generic/component',
-        'modal': './webapp/src/framework/generic/modal'
+        'framework': './webapp/src/framework/**/*.js',
+        'component': './webapp/src/component/**/*.js',
+        'widget': './webapp/src/widget/**/*.js',
+        'generic': './webapp/src/generic/**/*.js'
     }
 };

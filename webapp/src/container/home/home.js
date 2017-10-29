@@ -1,10 +1,10 @@
-import Component from 'component';
-import Handler from 'script/handler';
-import Infinite from 'script/widget/infinite';
+import Component from 'framework/component';
+import Handler from 'generic/handler';
+import Infinite from 'component/infinite';
 
 import template from './home.html';
 import ProductItem from './product-item';
-import CartOverlay from '../../script/component/cart-overlay';
+import CartOverlay from 'component/cart-overlay';
 
 class HomeView extends Component {
     // initialize() {

@@ -1,4 +1,4 @@
-import Modal from 'modal';
+import Modal from 'framework/modal';
 // import template from '../tpl/widget/alert.html';
 
 export default {
